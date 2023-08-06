@@ -1,0 +1,91 @@
+{
+    "code": 200,
+    "status": "status",
+    "message": "message",
+    "data": {
+        "number": 113,
+        "sequence": 20,
+        "numberOfVerses": 5,
+        "name": {
+            "short": "short",
+            "long": "long",
+            "transliteration": {
+                "en": "en",
+                "id": "en"
+            },
+            "translation": {
+                "en": "en",
+                "id": "id"
+            }
+        },
+        "revelation": {
+            "arab": "arab",
+            "en": "en",
+            "id": "id"
+        },
+        "tafsir": {
+            "id": "id"
+        },
+        "preBismillah": {
+            "text": {
+                "arab": "arab",
+                "transliteration": {
+                    "en": "en"
+                }
+            },
+            "translation": {
+                "en": "en",
+                "id": "id"
+            },
+            "audio": {
+                "primary": "primary",
+                "secondary": [
+                    "secondary",
+                    "secondary"
+                ]
+            }
+        },
+        "verses": [
+            {
+                "number": {
+                    "inQuran": 6226,
+                    "inSurah": 1
+                },
+                "meta": {
+                    "juz": 30,
+                    "page": 604,
+                    "manzil": 7,
+                    "ruku": 555,
+                    "hizbQuarter": 240,
+                    "sajda": {
+                        "recommended": false,
+                        "obligatory": false
+                    }
+                },
+                "text": {
+                    "arab": "arab",
+                    "transliteration": {
+                        "en": "en"
+                    }
+                },
+                "translation": {
+                    "en": "en",
+                    "id": "id"
+                },
+                "audio": {
+                    "primary": "primary",
+                    "secondary": [
+                        "secondary",
+                        "secondary"
+                    ]
+                },
+                "tafsir": {
+                    "id": {
+                        "short": "short",
+                        "long": "long"
+                    }
+                }
+            }
+        ]
+    }
+}

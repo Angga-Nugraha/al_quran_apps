@@ -1,0 +1,32 @@
+{
+    "code": 200,
+    "status": "status",
+    "message": "message",
+    "data": [
+        {
+            "number": 1,
+            "sequence": 5,
+            "numberOfVerses": 7,
+            "name": {
+                "short": "short",
+                "long": "long ",
+                "transliteration": {
+                    "en": "en",
+                    "id": "id"
+                },
+                "translation": {
+                    "en": "en",
+                    "id": "id"
+                }
+            },
+            "revelation": {
+                "arab": "arab",
+                "en": "en",
+                "id": "id"
+            },
+            "tafsir": {
+                "id": "id"
+            }
+        }
+    ]
+}

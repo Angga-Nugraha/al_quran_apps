@@ -8,7 +8,7 @@ import 'verses_tafsir.dart';
 class Verses extends Equatable {
   final Number? number;
   final Meta? meta;
-  final Text? text;
+  final TextAyat? text;
   final Translation? translation;
   final Audio? audio;
   final VersesTafsir? tafsir;

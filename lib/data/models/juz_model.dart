@@ -43,13 +43,14 @@ class JuzModel extends Equatable {
       };
 
   Juz toEntity() => Juz(
-      juz: juz,
-      juzStartSurahNumber: juzStartSurahNumber,
-      juzEndSurahNumber: juzEndSurahNumber,
-      juzStartInfo: juzStartInfo,
-      juzEndInfo: juzEndInfo,
-      totalVerses: totalVerses,
-      verses: verses.map((e) => e.toEntity()).toList());
+        juz: juz,
+        juzStartSurahNumber: juzStartSurahNumber,
+        juzEndSurahNumber: juzEndSurahNumber,
+        juzStartInfo: juzStartInfo,
+        juzEndInfo: juzEndInfo,
+        totalVerses: totalVerses,
+        verses: verses.map((e) => e.toEntity()).toList(),
+      );
 
   @override
   List<Object?> get props => [

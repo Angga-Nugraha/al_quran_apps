@@ -1,3 +1,4 @@
+import 'package:al_quran_apps/domain/repositories/audio_repositories.dart';
 import 'package:al_quran_apps/presentation/bloc/juz_surah/juz_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,14 +24,25 @@ import 'presentation/pages/landing_page.dart';
 
 import 'injection.dart' as di;
 
-void main() {
+void main() async {
+  await di.init();
   WidgetsFlutterBinding.ensureInitialized();
-  di.init();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void dispose() {
+    di.locator<AudioRepositories>().dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,7 @@ part of 'components_helpers.dart';
 Future<dynamic> myModalBottomSheet(
     {required BuildContext context, required String content}) {
   return showModalBottomSheet(
-    backgroundColor: const Color.fromARGB(255, 27, 26, 26),
+    backgroundColor: backgroundColor,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(20),
@@ -19,14 +19,16 @@ Future<dynamic> myModalBottomSheet(
         child: Column(
           children: [
             Container(
-              color: Colors.white,
+              color: foregroundColor,
               height: 4,
               width: 48,
               margin: const EdgeInsets.all(10),
             ),
             const Text(
               'Tasir',
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              style: TextStyle(
+                fontSize: 18,
+              ),
             ),
             const Divider(
               color: kDavysGrey,
@@ -42,8 +44,9 @@ Future<dynamic> myModalBottomSheet(
                       child: Text(
                         content,
                         textAlign: TextAlign.justify,
-                        style:
-                            const TextStyle(fontSize: 14, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),

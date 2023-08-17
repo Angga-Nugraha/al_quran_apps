@@ -1,15 +1,14 @@
 import 'package:al_quran_apps/presentation/bloc/show_translate/show_tanslate_bloc.dart';
-import 'package:al_quran_apps/presentation/widgets/audio_player.dart';
-import 'package:al_quran_apps/presentation/widgets/surah_card_list.dart';
+import 'package:al_quran_apps/presentation/widgets/audio_manager.dart';
+import 'package:al_quran_apps/presentation/widgets/list_of_ayat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 import '../../common/colors.dart';
 import '../../domain/entities/detail_surah/detail_surah.dart';
 import '../bloc/detail_surah/detail_surah_bloc.dart';
 import '../components/components_helpers.dart';
-import '../widgets/surah_card.dart';
+import '../widgets/ayat_card.dart';
 
 class DetailSurahPage extends StatefulWidget {
   final int number;
@@ -20,27 +19,26 @@ class DetailSurahPage extends StatefulWidget {
 }
 
 class _DetailSurahPageState extends State<DetailSurahPage> {
-  List<String> listAudio = [];
   late DetailSurah surah;
-  late bool hasBismillah;
-  static bool isTranslate = true;
+  bool? isTranslate = true;
+  List<String> playList = [];
+
   @override
   void initState() {
     super.initState();
-
-    Future.microtask(() => Provider.of<DetailSurahBloc>(context, listen: false)
-        .add(FetchDetailSurah(widget.number)));
+    Future.microtask(
+      () => [
+        BlocProvider.of<DetailSurahBloc>(context, listen: false)
+            .add(FetchDetailSurah(widget.number)),
+        BlocProvider.of<ShowTranslateBloc>(context, listen: false)
+            .add(ShowingEvent()),
+      ],
+    );
   }
 
-  List<String> _getAudio(DetailSurah detailSurah, bool hasBismillah) {
-    List<String> result = [];
-    if (!hasBismillah) {
-      result.add(detailSurah.preBismillah.audio!.primary!);
-    }
-    for (var list in detailSurah.verses) {
-      result.add(list.audio!.primary!);
-    }
-    return result;
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -50,21 +48,19 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
         foregroundColor: darkColor,
         elevation: 2,
         shadowColor: darkColor,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10)),
-        ),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios_outlined),
         ),
-        title: Image.asset(
-          'assets/images/bismillah.png',
-          height: 35,
-          color: Colors.black,
+        title: BlocBuilder<DetailSurahBloc, DetailSurahState>(
+          builder: (context, state) {
+            if (state is DetailSurahHasData) {
+              return Text(state.result.name.transliteration!.id!);
+            }
+            return const Text('');
+          },
         ),
         centerTitle: true,
         actions: [
@@ -90,68 +86,34 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
             );
           } else if (state is DetailSurahHasData) {
             surah = state.result;
-            return BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
-              builder: (context, state) {
-                if (state is ShowingState) {
-                  isTranslate = state.result;
-                } else if (state is HiddenState) {
-                  isTranslate = state.result;
-                }
-                return Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.all(15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${surah.name.transliteration!.id}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
-                                letterSpacing: 3),
-                          ),
-                          Text(
-                            '${surah.name.translation!.id}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            '${surah.revelation.id} - ${surah.numberOfVerses} ayat',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(
-                      thickness: 2,
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: isTranslate
-                          ? SurahListcard(verses: surah.verses)
-                          : SurahCard(
-                              verses: surah.verses,
-                              bism: surah.preBismillah.text!.arab ?? '',
-                            ),
-                    ),
-                  ],
-                );
-              },
+            return Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
+                  builder: (context, state) {
+                    if (state is ShowingState) {
+                      isTranslate = state.result;
+                      return ListOfAyat(
+                        verses: surah.verses,
+                        preBismillah: surah.preBismillah.text!.arab,
+                      );
+                    } else if (state is HiddenState) {
+                      isTranslate = state.result;
+                      return CardOfAyat(
+                        verses: surah.verses,
+                        preBismillah: surah.preBismillah.text!.arab,
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ],
             );
           } else if (state is DetailSurahError) {
             final message = state.message;
             return Center(
-              child: Text(
-                message,
-              ),
+              child: Text(message),
             );
           } else {
             return const Text(
@@ -162,53 +124,59 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
         },
       ),
       bottomNavigationBar: Container(
-        color: kOxfordBlue,
+        color: kDavysGrey,
+        height: 60,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
-              child: Text(
-                'Show translate',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
+            BlocConsumer<ShowTranslateBloc, ShowTranslateState>(
+              listener: (context, state) {
+                if (state is ShowingState) {
+                  isTranslate = state.result;
+                } else if (state is HiddenState) {
+                  isTranslate = state.result;
+                }
+              },
+              builder: (context, state) {
+                return Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const Text("Show Translate"),
+                    Checkbox(
+                      value: isTranslate,
+                      onChanged: (value) {
+                        if (value!) {
+                          context.read<ShowTranslateBloc>().add(ShowingEvent());
+                        } else {
+                          context.read<ShowTranslateBloc>().add(HiddenEvent());
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
-            Flexible(
-              child: BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
-                builder: (context, state) {
-                  if (state is ShowingState) {
-                    isTranslate = state.result;
-                  } else if (state is HiddenState) {
-                    isTranslate = state.result;
+            BlocBuilder<DetailSurahBloc, DetailSurahState>(
+              builder: (context, state) {
+                if (state is DetailSurahHasData) {
+                  surah = state.result;
+                  final listAyat =
+                      surah.verses.map((e) => e.audio!.primary!).toList();
+                  if (surah.preBismillah.audio!.primary == null) {
+                    playList = listAyat;
+                  } else {
+                    listAyat.insert(0, surah.preBismillah.audio!.primary!);
+                    playList = listAyat;
                   }
-                  return Checkbox(
-                    value: isTranslate,
-                    onChanged: (value) {
-                      if (value!) {
-                        context.read<ShowTranslateBloc>().add(ShowingEvent());
-                      } else {
-                        context.read<ShowTranslateBloc>().add(HiddenEvent());
-                      }
-                    },
+                  return AudioManager(
+                    title:
+                        "${surah.name.transliteration!.id!} 1 - ${surah.verses.length}",
+                    album: surah.name.transliteration!.id!,
+                    playList: playList,
                   );
-                },
-              ),
-            ),
-            Expanded(
-              child: BlocBuilder<DetailSurahBloc, DetailSurahState>(
-                builder: (context, state) {
-                  if (state is DetailSurahHasData) {
-                    surah = state.result;
-                    final bismillah = surah.preBismillah.text!.arab;
-                    hasBismillah = bismillah == null ? true : false;
-                    listAudio = _getAudio(surah, hasBismillah);
-                  }
-                  return AudioHelper(listAudio: listAudio);
-                },
-              ),
+                }
+                return const Text('Loading...');
+              },
             ),
           ],
         ),

@@ -10,7 +10,8 @@ import 'package:al_quran_apps/domain/entities/detail_surah/detail_surah.dart'
     as _i7;
 import 'package:al_quran_apps/domain/repositories/surah_repositories.dart'
     as _i2;
-import 'package:al_quran_apps/domain/usecases/get_detail_surah.dart' as _i4;
+import 'package:al_quran_apps/domain/usecases/surah/get_detail_surah.dart'
+    as _i4;
 import 'package:dartz/dartz.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 

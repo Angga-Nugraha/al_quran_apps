@@ -1,7 +1,9 @@
 import 'package:al_quran_apps/presentation/bloc/juz_surah/juz_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/show_translate/show_tanslate_bloc.dart';
-import 'package:al_quran_apps/presentation/widgets/surah_card.dart';
-import 'package:al_quran_apps/presentation/widgets/surah_card_list.dart';
+import 'package:al_quran_apps/presentation/components/components_helpers.dart';
+import 'package:al_quran_apps/presentation/widgets/audio_manager.dart';
+import 'package:al_quran_apps/presentation/widgets/ayat_card.dart';
+import 'package:al_quran_apps/presentation/widgets/list_of_ayat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,13 +18,18 @@ class JuzSurahPage extends StatefulWidget {
 }
 
 class _JuzSurahPageState extends State<JuzSurahPage> {
-  bool isTranslate = false;
+  bool? isTranslate = true;
+  List<String> playList = [];
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => BlocProvider.of<JuzBloc>(context, listen: false)
-        .add(FetchSurahJuz(number: widget.number)));
+    Future.microtask(() => [
+          BlocProvider.of<JuzBloc>(context, listen: false)
+              .add(FetchSurahJuz(number: widget.number)),
+          BlocProvider.of<ShowTranslateBloc>(context, listen: false)
+              .add(ShowingEvent()),
+        ]);
   }
 
   @override
@@ -50,12 +57,23 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.menu_book_outlined,
-            ),
-          ),
+          BlocBuilder<JuzBloc, JuzState>(builder: (context, state) {
+            if (state is JuzLoaded) {
+              return IconButton(
+                onPressed: () {
+                  myModalBottomSheet(
+                    context: context,
+                    content:
+                        "Juz ${state.result.juz} dimulai dari surat ${state.result.juzStartInfo} s/d surat ${state.result.juzEndInfo}, yang terdiri dari ${state.result.totalVerses} ayat",
+                  );
+                },
+                icon: const Icon(
+                  Icons.menu_book_outlined,
+                ),
+              );
+            }
+            return Container();
+          }),
           const SizedBox(width: 20),
         ],
       ),
@@ -66,117 +84,90 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
               child: CircularProgressIndicator(),
             );
           } else if (state is JuzLoaded) {
-            final verses = state.result.verses;
-            return Column(
-              children: [
-                Card(
-                  elevation: 2,
-                  margin: const EdgeInsets.all(10),
-                  shadowColor: kDavysGrey,
-                  child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(15),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Juz ${state.result.juz}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 22,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            'Surat ${state.result.juzStartInfo}\ns/d\nSurat ${state.result.juzEndInfo}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            'Total Ayat : ${state.result.totalVerses} ayat',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
-                  builder: (context, state) {
-                    if (state is ShowingState) {
-                      isTranslate = state.result;
-                    } else if (state is HiddenState) {
-                      isTranslate = state.result;
-                    }
-                    return Expanded(
-                        child: isTranslate
-                            ? SurahListcard(verses: verses)
-                            : SurahCard(verses: verses));
-                  },
-                ),
-              ],
+            final result = state.result;
+            final verses = result.verses;
+
+            return BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
+              builder: (context, state) {
+                if (state is ShowingState) {
+                  return ListOfAyat(
+                    verses: verses,
+                    preBismillah: null,
+                  );
+                } else if (state is HiddenState) {
+                  return CardOfAyat(
+                    verses: verses,
+                    preBismillah: null,
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            );
+          } else if (state is JuzError) {
+            return Center(
+              child: Text(state.message),
+            );
+          } else {
+            return const Text(
+              key: Key("error_message"),
+              "Failed",
             );
           }
-          return Container();
         },
       ),
       bottomNavigationBar: Container(
         color: kOxfordBlue,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Flexible(
-              child: Text(
-                'Show translate',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
+            BlocConsumer<ShowTranslateBloc, ShowTranslateState>(
+              listener: (context, state) {
+                if (state is ShowingState) {
+                  isTranslate = state.result;
+                } else if (state is HiddenState) {
+                  isTranslate = state.result;
+                }
+              },
+              builder: (context, state) {
+                return Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const Text('Show translate'),
+                    Checkbox(
+                      value: isTranslate,
+                      onChanged: (value) {
+                        if (value!) {
+                          context.read<ShowTranslateBloc>().add(ShowingEvent());
+                        } else {
+                          context.read<ShowTranslateBloc>().add(HiddenEvent());
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
-            Flexible(
-              child: BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
-                builder: (context, state) {
-                  if (state is ShowingState) {
-                    isTranslate = state.result;
-                  } else if (state is HiddenState) {
-                    isTranslate = state.result;
-                  }
-                  return Checkbox(
-                    value: isTranslate,
-                    onChanged: (value) {
-                      if (value!) {
-                        context.read<ShowTranslateBloc>().add(ShowingEvent());
-                      } else {
-                        context.read<ShowTranslateBloc>().add(HiddenEvent());
-                      }
-                    },
+            BlocBuilder<JuzBloc, JuzState>(
+              builder: (context, state) {
+                if (state is JuzLoaded) {
+                  final juz = state.result;
+                  playList = juz.verses.map((e) => e.audio!.primary!).toList();
+                  // if (juz.preBismillah.audio!.primary == null) {
+                  //   playList = listAyat;
+                  // } else {
+                  //   listAyat.insert(0, juz.preBismillah.audio!.primary!);
+                  //   playList = listAyat;
+                  // }
+                  return AudioManager(
+                    title: "${juz.juzStartInfo} s/d ${juz.juzEndInfo}",
+                    album: "Juz ${juz.juz} - ${juz.totalVerses} ayat",
+                    playList: playList,
                   );
-                },
-              ),
+                }
+                return const Text('Loading...');
+              },
             ),
-            // Expanded(
-            //   child: BlocBuilder<DetailSurahBloc, DetailSurahState>(
-            //     builder: (context, state) {
-            //       // if (state is DetailSurahHasData) {
-            //       //   surah = state.result;
-            //       //   final bismillah = surah.preBismillah.text!.arab;
-            //       //   hasBismillah = bismillah == null ? true : false;
-            //       //   listAudio = _getAudio(surah, hasBismillah);
-            //       // }
-            //       return AudioHelper(listAudio: listAudio);
-            //     },
-            //   ),
-            // ),
           ],
         ),
       ),

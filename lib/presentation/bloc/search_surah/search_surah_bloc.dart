@@ -1,4 +1,4 @@
-import 'package:al_quran_apps/domain/usecases/search_surah.dart';
+import 'package:al_quran_apps/domain/usecases/surah/search_surah.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

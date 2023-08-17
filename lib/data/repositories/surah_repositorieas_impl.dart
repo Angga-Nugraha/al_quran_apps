@@ -85,4 +85,19 @@ class SurahRepositoryImpl implements SurahRepository {
       return left(ServerFailure(e.toString()));
     }
   }
+
+  // @override
+  // Future<Either<Failure, List<Audio>>> getPlayList(int id) async {
+  //   try {
+  //     final result = await surahRemoteDataSource.getDetailSurah(id);
+  //     final audio = result.verses!.map((e) => e.audio!.toEntity()).toList();
+
+  //     return Right(audio);
+  //   } on ServerException {
+  //     return const Left(ServerFailure(''));
+  //   } on SocketException {
+  //     return const Left(
+  //         ConnectionFailure('Failed, try connect to the network'));
+  //   }
+  // }
 }

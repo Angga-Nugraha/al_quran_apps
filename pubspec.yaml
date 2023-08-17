@@ -30,6 +30,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   arabic_numbers: ^1.0.0
+  audio_service: ^0.18.10
   audioplayers: ^1.1.1
   build_runner: ^2.3.0
   convex_bottom_bar: ^3.1.0+1
@@ -48,6 +49,7 @@ dependencies:
   get_it: ^7.2.0
   google_fonts: ^3.0.1
   http: ^0.13.5
+  just_audio: ^0.9.34
   path_provider: ^2.0.11
   provider: ^6.0.4
   rxdart: ^0.27.5

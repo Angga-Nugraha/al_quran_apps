@@ -2,19 +2,21 @@ import 'package:al_quran_apps/domain/entities/detail_surah/verses.dart';
 import 'package:arabic_numbers/arabic_numbers.dart';
 import 'package:flutter/material.dart';
 
-class SurahCard extends StatefulWidget {
+class CardOfAyat extends StatefulWidget {
   final List<Verses> verses;
-  final String? bism;
-  const SurahCard({super.key, required this.verses, this.bism});
+  final String? preBismillah;
+  const CardOfAyat({super.key, required this.verses, this.preBismillah});
 
   @override
-  State<SurahCard> createState() => _SurahCardState();
+  State<CardOfAyat> createState() => _CardOfAyatState();
 }
 
-class _SurahCardState extends State<SurahCard> {
+class _CardOfAyatState extends State<CardOfAyat> {
   final arabicNumber = ArabicNumbers();
 
   String allAyat = "";
+
+  Map<int, List<String>> groupedItems = {};
 
   String result(List<Verses> verses) {
     var ayah = '';
@@ -30,7 +32,6 @@ class _SurahCardState extends State<SurahCard> {
   @override
   void initState() {
     super.initState();
-    result(widget.verses);
   }
 
   @override
@@ -41,7 +42,6 @@ class _SurahCardState extends State<SurahCard> {
         Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.only(top: 30, bottom: 30),
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/border.png'),
@@ -50,10 +50,11 @@ class _SurahCardState extends State<SurahCard> {
           ),
         ),
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 25),
+          margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Text(
-              "${widget.bism ?? ''}\n$allAyat",
+              "${widget.preBismillah ?? ''}\n${result(widget.verses)}",
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.center,
               textWidthBasis: TextWidthBasis.longestLine,

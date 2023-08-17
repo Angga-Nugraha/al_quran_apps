@@ -4,7 +4,7 @@ import 'package:al_quran_apps/domain/entities/detail_surah/prebismillah.dart';
 import 'package:al_quran_apps/domain/entities/surah/revelation.dart';
 import 'package:al_quran_apps/domain/entities/surah/tafsir.dart';
 import 'package:al_quran_apps/domain/entities/detail_surah/verses.dart';
-import 'package:al_quran_apps/domain/usecases/get_detail_surah.dart';
+import 'package:al_quran_apps/domain/usecases/surah/get_detail_surah.dart';
 import 'package:al_quran_apps/presentation/bloc/detail_surah/detail_surah_bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';

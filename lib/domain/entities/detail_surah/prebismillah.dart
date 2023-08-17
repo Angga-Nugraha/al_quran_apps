@@ -4,7 +4,7 @@ import 'audio.dart';
 import '../surah/name.dart';
 
 class PreBismillah extends Equatable {
-  final Text? text;
+  final TextAyat? text;
   final Transliteration? translation;
   final Audio? audio;
 
@@ -18,11 +18,11 @@ class PreBismillah extends Equatable {
       ];
 }
 
-class Text extends Equatable {
+class TextAyat extends Equatable {
   final String? arab;
   final Transliteration? transliteration;
 
-  const Text({this.arab, this.transliteration});
+  const TextAyat({this.arab, this.transliteration});
 
   @override
   List<Object?> get props => [

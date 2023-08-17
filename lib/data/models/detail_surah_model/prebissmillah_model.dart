@@ -58,8 +58,8 @@ class TextModel extends Equatable {
         "arab": arab,
         "transliteration": transliteration?.toJson(),
       };
-  Text toEntity() {
-    return Text(arab: arab, transliteration: transliteration!.toEntity());
+  TextAyat toEntity() {
+    return TextAyat(arab: arab, transliteration: transliteration!.toEntity());
   }
 
   @override

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../../common/colors.dart';
 import '../bloc/list_surah/list_surah_bloc.dart';
 import '../widgets/last_read_banner.dart';
-import '../widgets/surah_list.dart';
+import '../widgets/list_of_surah.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -109,102 +109,107 @@ class _HomePageState extends State<HomePage>
           },
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const LastReadBanner(),
-            TabBar(
-              splashBorderRadius: BorderRadius.circular(10),
-              dividerColor: kDavysGrey,
-              indicatorColor: darkColor,
-              indicatorWeight: 3,
-              controller: _controller,
-              labelColor: darkColor,
-              labelStyle: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-              ),
-              tabs: const [
-                Tab(
-                  text: 'Surah',
-                ),
-                Tab(
-                  text: 'Juz',
-                ),
-              ],
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const LastReadBanner(),
+          const Divider(thickness: 2),
+          TabBar(
+            splashBorderRadius: BorderRadius.circular(10),
+            indicatorSize: TabBarIndicatorSize.label,
+            dividerColor: kDavysGrey,
+            isScrollable: true,
+            indicatorColor: darkColor,
+            indicatorWeight: 3,
+            controller: _controller,
+            labelColor: darkColor,
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
             ),
-            Flexible(
-              child: SizedBox(
-                child: TabBarView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: _controller,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  children: [
-                    BlocBuilder<ListSurahBloc, ListSurahState>(
-                      builder: (context, state) {
-                        if (state is SurahListLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (state is SurahListHasData) {
-                          listSurah = searchListSurah = state.result;
-                          return BlocBuilder<SearchSurahBloc, SearchSurahState>(
-                            builder: (context, state) {
-                              if (state is CancelHasData) {
-                                searchListSurah = listSurah;
-                              } else if (state is SearchSurahHasData) {
-                                searchListSurah = state.result;
-                                if (searchListSurah.isEmpty) {
-                                  return const Center(
-                                    child: Text('Surah not found'),
-                                  );
-                                }
+            tabs: const [
+              Tab(
+                text: 'Surah',
+              ),
+              Tab(
+                text: 'Juz',
+              ),
+            ],
+          ),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(15.0),
+              child: TabBarView(
+                physics: const BouncingScrollPhysics(),
+                controller: _controller,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                children: [
+                  BlocBuilder<ListSurahBloc, ListSurahState>(
+                    builder: (context, state) {
+                      if (state is SurahListLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is SurahListHasData) {
+                        listSurah = searchListSurah = state.result;
+                        return BlocBuilder<SearchSurahBloc, SearchSurahState>(
+                          builder: (context, state) {
+                            if (state is CancelHasData) {
+                              searchListSurah = listSurah;
+                            } else if (state is SearchSurahHasData) {
+                              searchListSurah = state.result;
+                              if (searchListSurah.isEmpty) {
+                                return const Center(
+                                  child: Text('Surah not found'),
+                                );
                               }
-                              return SurahList(
-                                surah: searchListSurah,
-                              );
-                            },
-                          );
-                        } else if (state is SurahListError) {
-                          final message = state.message;
-                          return Center(
-                            child: Text(
-                              message,
-                            ),
-                          );
-                        } else {
-                          return const Text(
-                            key: Key('error_message'),
-                            'Failed',
-                          );
-                        }
-                      },
-                    ),
-                    GridView.builder(
-                      padding: const EdgeInsets.only(top: 10),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5,
-                      ),
-                      itemCount: 30,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, juzPageRoutes,
-                                arguments: index + 1);
+                            }
+                            return SurahList(
+                              surah: searchListSurah,
+                            );
                           },
-                          child: Container(
-                            margin: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: kDavysGrey,
-                            ),
-                            child: Center(
-                              child: Text(
+                        );
+                      } else if (state is SurahListError) {
+                        final message = state.message;
+                        return Center(
+                          child: Text(
+                            message,
+                          ),
+                        );
+                      } else {
+                        return const Text(
+                          key: Key('error_message'),
+                          'Failed',
+                        );
+                      }
+                    },
+                  ),
+                  GridView.builder(
+                    padding: const EdgeInsets.only(top: 10),
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                    ),
+                    itemCount: 30,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, juzPageRoutes,
+                              arguments: index + 1);
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.all(10),
+                          elevation: 4,
+                          shadowColor: kDavysGrey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.folder_open,
+                                color: darkColor,
+                              ),
+                              Text(
                                 'Juz ${(index + 1)}',
                                 style: const TextStyle(
                                   color: darkColor,
@@ -212,18 +217,18 @@ class _HomePageState extends State<HomePage>
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-            // const SizedBox(height: 100)
-          ],
-        ),
+          ),
+          // const SizedBox(height: 100)
+        ],
       ),
     );
   }

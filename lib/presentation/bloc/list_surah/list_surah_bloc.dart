@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/surah/surah.dart';
-import '../../../domain/usecases/get_list_surah.dart';
+import '../../../domain/usecases/surah/get_list_surah.dart';
 
 part 'list_surah_event.dart';
 part 'list_surah_state.dart';

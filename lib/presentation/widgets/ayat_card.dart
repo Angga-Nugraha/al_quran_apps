@@ -14,23 +14,23 @@ class CardOfAyat extends StatefulWidget {
 class _CardOfAyatState extends State<CardOfAyat> {
   final arabicNumber = ArabicNumbers();
 
-  String allAyat = "";
-
-  Map<int, List<String>> groupedItems = {};
+  late String allAyat;
 
   String result(List<Verses> verses) {
     var ayah = '';
     var numb = '';
+    var allAyah = '';
     for (var ayat in verses) {
       ayah = "${ayat.text!.arab}";
       numb = arabicNumber.convert(ayat.number!.inSurah);
-      allAyat = '$allAyat$ayah$numb ';
+      allAyah = '$allAyah$ayah$numb ';
     }
-    return allAyat;
+    return allAyah;
   }
 
   @override
   void initState() {
+    allAyat = result(widget.verses);
     super.initState();
   }
 
@@ -54,10 +54,9 @@ class _CardOfAyatState extends State<CardOfAyat> {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Text(
-              "${widget.preBismillah ?? ''}\n${result(widget.verses)}",
+              "${widget.preBismillah ?? ''}\n$allAyat",
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.center,
-              textWidthBasis: TextWidthBasis.longestLine,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 28,

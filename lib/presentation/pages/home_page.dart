@@ -1,9 +1,9 @@
 import 'package:al_quran_apps/common/routes.dart';
 import 'package:al_quran_apps/domain/entities/surah/surah.dart';
+import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/search_surah/search_surah_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 import '../../common/colors.dart';
 import '../bloc/list_surah/list_surah_bloc.dart';
@@ -27,8 +27,12 @@ class _HomePageState extends State<HomePage>
 
     _controller = TabController(length: 2, vsync: this);
 
-    Future.microtask(() => Provider.of<ListSurahBloc>(context, listen: false)
-        .add(FetchNowListSurah()));
+    Future.microtask(() => [
+          BlocProvider.of<LastReadBloc>(context, listen: false)
+              .add(GetLastReadEvent()),
+          BlocProvider.of<ListSurahBloc>(context, listen: false)
+              .add(FetchNowListSurah())
+        ]);
   }
 
   static bool _isSearching = false;
@@ -112,7 +116,16 @@ class _HomePageState extends State<HomePage>
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const LastReadBanner(),
+          BlocBuilder<LastReadBloc, LastReadState>(
+            builder: (context, state) {
+              if (state is LastReadHasData) {
+                return LastReadBanner(lastRead: state.result);
+              } else if (state is LastReadHasError) {
+                return LastReadBanner(lastRead: const {});
+              }
+              return Container();
+            },
+          ),
           const Divider(thickness: 2),
           TabBar(
             splashBorderRadius: BorderRadius.circular(10),

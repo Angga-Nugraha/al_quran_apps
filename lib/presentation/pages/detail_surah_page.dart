@@ -12,7 +12,10 @@ import '../widgets/ayat_card.dart';
 
 class DetailSurahPage extends StatefulWidget {
   final int number;
-  const DetailSurahPage({super.key, required this.number});
+  const DetailSurahPage({
+    super.key,
+    required this.number,
+  });
 
   @override
   State<DetailSurahPage> createState() => _DetailSurahPageState();
@@ -93,10 +96,7 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
                   builder: (context, state) {
                     if (state is ShowingState) {
                       isTranslate = state.result;
-                      return ListOfAyat(
-                        verses: surah.verses,
-                        preBismillah: surah.preBismillah.text!.arab,
-                      );
+                      return ListOfAyat(surah, null);
                     } else if (state is HiddenState) {
                       isTranslate = state.result;
                       return CardOfAyat(

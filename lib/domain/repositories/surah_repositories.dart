@@ -10,4 +10,6 @@ abstract class SurahRepository {
   Future<Either<Failure, List<Surah>>> searchSurah(String query);
   Future<Either<Failure, DetailSurah>> getSpecificSurah(int number);
   Future<Either<Failure, Juz>> getSurahJuz(int number);
+  Future<Either<Failure, String>> insertLastRead(Map<String, dynamic> surah);
+  Future<Either<Failure, Map<String, dynamic>>> getLastRead();
 }

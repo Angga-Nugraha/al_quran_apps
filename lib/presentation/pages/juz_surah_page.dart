@@ -90,10 +90,7 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
             return BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
               builder: (context, state) {
                 if (state is ShowingState) {
-                  return ListOfAyat(
-                    verses: verses,
-                    preBismillah: null,
-                  );
+                  return ListOfAyat(null, result);
                 } else if (state is HiddenState) {
                   return CardOfAyat(
                     verses: verses,

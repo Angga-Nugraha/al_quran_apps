@@ -1,5 +1,6 @@
 import 'package:al_quran_apps/domain/repositories/audio_repositories.dart';
 import 'package:al_quran_apps/presentation/bloc/juz_surah/juz_bloc.dart';
+import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => di.locator<ShowTranslateBloc>()),
         BlocProvider(create: (_) => di.locator<SearchSurahBloc>()),
         BlocProvider(create: (_) => di.locator<JuzBloc>()),
+        BlocProvider(create: (_) => di.locator<LastReadBloc>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -8,7 +8,9 @@ import 'package:al_quran_apps/domain/usecases/audio/get_playlist.dart';
 import 'package:al_quran_apps/domain/usecases/audio/seek_audio.dart';
 import 'package:al_quran_apps/domain/usecases/juz/get_surah_juz.dart';
 import 'package:al_quran_apps/domain/usecases/audio/play_audio.dart';
+import 'package:al_quran_apps/domain/usecases/surah/insert_last_read.dart';
 import 'package:al_quran_apps/domain/usecases/surah/search_surah.dart';
+import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/search_surah/search_surah_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/show_translate/show_tanslate_bloc.dart';
 import 'package:audio_service/audio_service.dart';
@@ -20,6 +22,7 @@ import 'data/datasource/surah_data_source.dart';
 import 'data/repositories/surah_repositorieas_impl.dart';
 import 'domain/repositories/surah_repositories.dart';
 import 'domain/usecases/surah/get_detail_surah.dart';
+import 'domain/usecases/surah/get_last_read.dart';
 import 'domain/usecases/surah/get_list_surah.dart';
 import 'domain/usecases/audio/pause_audio.dart';
 import 'domain/usecases/audio/stop_audio.dart';
@@ -46,6 +49,9 @@ Future<void> init() async {
   locator.registerFactory(() => ShowTranslateBloc());
   locator.registerFactory(() => SearchSurahBloc(searchSurah: locator()));
   locator.registerFactory(() => JuzBloc(getSurahJuz: locator()));
+  locator.registerFactory(
+    () => LastReadBloc(insertLastRead: locator(), getLastRead: locator()),
+  );
 
 // ===================== USECASE ==============================
   locator.registerLazySingleton(() => GetListSurah(locator()));
@@ -53,6 +59,8 @@ Future<void> init() async {
   locator.registerLazySingleton(() => SearchSurah(locator()));
   locator.registerLazySingleton(() => GetSurahJuz(locator()));
   locator.registerLazySingleton(() => GetPlaylist(locator()));
+  locator.registerLazySingleton(() => InsertLastRead(locator()));
+  locator.registerLazySingleton(() => GetLastRead(locator()));
   locator.registerLazySingleton(() => PlayAudio(locator()));
   locator.registerLazySingleton(() => PauseAudio(locator()));
   locator.registerLazySingleton(() => StopAudio(locator()));

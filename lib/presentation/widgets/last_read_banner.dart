@@ -1,18 +1,27 @@
+import 'package:al_quran_apps/common/routes.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/colors.dart';
 
 class LastReadBanner extends StatelessWidget {
   const LastReadBanner({
+    required this.lastRead,
     Key? key,
   }) : super(key: key);
+
+  final Map<String, dynamic> lastRead;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       splashColor: kDavysGrey,
-      onTap: () {},
+      onTap: () {
+        if (lastRead.isNotEmpty) {
+          Navigator.pushNamed(context, detailPageRoutes,
+              arguments: lastRead['surah_number']);
+        }
+      },
       child: Card(
         margin: const EdgeInsets.all(10.0),
         elevation: 2,
@@ -58,17 +67,19 @@ class LastReadBanner extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      'Al-Fatihah',
-                      style: TextStyle(
+                    Text(
+                      lastRead.isNotEmpty ? lastRead['surah_name'] : 'Empty',
+                      style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 18,
                           color: darkColor,
                           letterSpacing: 1.5),
                     ),
-                    const Text(
-                      'Juz: 1, Ayat: 1',
-                      style: TextStyle(
+                    Text(
+                      lastRead.isNotEmpty
+                          ? 'Juz: ${lastRead['juz']}, Ayat: ${lastRead['ayat']}'
+                          : '',
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
                         color: darkColor,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:al_quran_apps/common/network_info.dart';
 import 'package:al_quran_apps/data/datasource/local_data_source.dart';
+import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:al_quran_apps/data/models/database_model/surah_tabel.dart';
 import 'package:al_quran_apps/domain/entities/juz.dart';
 import 'package:dartz/dartz.dart';
@@ -86,18 +87,24 @@ class SurahRepositoryImpl implements SurahRepository {
     }
   }
 
-  // @override
-  // Future<Either<Failure, List<Audio>>> getPlayList(int id) async {
-  //   try {
-  //     final result = await surahRemoteDataSource.getDetailSurah(id);
-  //     final audio = result.verses!.map((e) => e.audio!.toEntity()).toList();
+  @override
+  Future<Either<Failure, String>> insertLastRead(
+      Map<String, dynamic> surah) async {
+    try {
+      await localDataSource.insertLastRead(LastReadTable.fromMap(surah));
+      return const Right("Success");
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
+  }
 
-  //     return Right(audio);
-  //   } on ServerException {
-  //     return const Left(ServerFailure(''));
-  //   } on SocketException {
-  //     return const Left(
-  //         ConnectionFailure('Failed, try connect to the network'));
-  //   }
-  // }
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getLastRead() async {
+    try {
+      final result = await localDataSource.getLastRead();
+      return Right(result.toJson());
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
+  }
 }

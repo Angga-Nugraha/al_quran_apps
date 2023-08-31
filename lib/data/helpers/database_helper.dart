@@ -1,3 +1,4 @@
+import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
@@ -20,6 +21,7 @@ class DatabaseHelper {
   }
 
   static const String _tableSurah = 'Surah';
+  static const String _lastRead = 'Last_read';
 
   Future<Database> _initDb() async {
     final path = await getDatabasesPath();
@@ -48,6 +50,15 @@ class DatabaseHelper {
         category TEXT
       );
     ''');
+    await db.execute(''' 
+      CREATE TABLE $_lastRead(
+        surah_number INTEGER PRIMARY KEY,
+        surah_name TEXT,
+        juz INTEGER,
+        ayat INTEGER,
+        category TEXT
+      );
+    ''');
   }
 
   Future<void> insertCacheTransaction(
@@ -62,6 +73,26 @@ class DatabaseHelper {
     });
   }
 
+  Future<void> insertlastReadTransaction(
+      LastReadTable surah, String category) async {
+    final db = await database;
+    db!.transaction((txn) async {
+      final lastRead = surah.toJson();
+      lastRead['category'] = category;
+      txn.insert(_lastRead, lastRead);
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> getLastRead(String category) async {
+    final db = await database;
+    final result = await db!.query(
+      _lastRead,
+      where: 'category = ?',
+      whereArgs: [category],
+    );
+    return result;
+  }
+
   Future<List<Map<String, dynamic>>> getCacheAllSurah(String category) async {
     final db = await database;
     final List<Map<String, dynamic>> results = await db!.query(
@@ -72,10 +103,10 @@ class DatabaseHelper {
     return results;
   }
 
-  Future<int> clearCache(String category) async {
+  Future<int> clearCache(String table, String category) async {
     final db = await database;
     return await db!.delete(
-      _tableSurah,
+      table,
       where: 'category = ?',
       whereArgs: [category],
     );

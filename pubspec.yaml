@@ -33,6 +33,7 @@ dependencies:
   audio_service: ^0.18.10
   audioplayers: ^1.1.1
   build_runner: ^2.3.0
+  context_menus: ^1.0.2
   convex_bottom_bar: ^3.1.0+1
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1

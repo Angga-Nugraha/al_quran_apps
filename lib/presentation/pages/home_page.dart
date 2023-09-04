@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage>
               if (state is LastReadHasData) {
                 return LastReadBanner(lastRead: state.result);
               } else if (state is LastReadHasError) {
-                return LastReadBanner(lastRead: const {});
+                return const LastReadBanner(lastRead: {});
               }
               return Container();
             },

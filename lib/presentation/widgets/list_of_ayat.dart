@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/juz.dart';
 
 class ListOfAyat extends StatefulWidget {
-  const ListOfAyat(this.detailSurah, this.juz, {super.key});
+  const ListOfAyat({this.detailSurah, this.juz, super.key});
 
   final DetailSurah? detailSurah;
   final Juz? juz;
@@ -20,12 +20,22 @@ class ListOfAyat extends StatefulWidget {
 
 class _ListOfAyatState extends State<ListOfAyat> {
   final arabicNumber = ArabicNumbers();
+  static bool isLastRead = false;
 
   @override
   void initState() {
-    // Future.microtask(() => BlocProvider.of<LastReadBloc>(context, listen: false)
-    //     .add(GetLastReadEvent()));
+    Future.microtask(() => BlocProvider.of<LastReadBloc>(context, listen: false)
+        .add(GetLastReadEvent()));
     super.initState();
+  }
+
+  void checkLastRead(Map<String, dynamic> data, int numSurah) {
+    if (data['surah_number'] == widget.detailSurah!.number &&
+        data['ayat'] == numSurah) {
+      isLastRead = true;
+    } else {
+      isLastRead = false;
+    }
   }
 
   @override
@@ -56,7 +66,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontFamily: "Uthmanic",
-                      fontSize: 28,
+                      fontSize: 30,
                     ),
                   ),
             ListView.builder(
@@ -69,80 +79,91 @@ class _ListOfAyatState extends State<ListOfAyat> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        color: kDavysGrey,
-                        child: ListTile(
-                          iconColor: darkColor,
-                          textColor: darkColor,
-                          leading: Text(
-                            arabicNumber.convert(ayat.number!.inSurah),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Uthmanic",
-                              fontSize: 28,
-                            ),
-                          ),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width,
+                      BlocBuilder<LastReadBloc, LastReadState>(
+                        builder: (context, state) {
+                          if (state is LastReadHasData) {
+                            widget.detailSurah == null
+                                ? () {}
+                                : checkLastRead(
+                                    state.result, ayat.number!.inSurah!);
+                          }
+                          return Container(
+                            color: isLastRead ? Colors.green : kDavysGrey,
+                            child: ListTile(
+                              iconColor: darkColor,
+                              textColor: darkColor,
+                              leading: Text(
+                                arabicNumber.convert(ayat.number!.inSurah),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Uthmanic",
+                                  fontSize: 30,
                                 ),
                               ),
-                              Flexible(
-                                child: IconButton(
-                                  onPressed: () {
-                                    myModalBottomSheet(
-                                      context: context,
-                                      content: verses[index].tafsir!.id.long,
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.menu_book_outlined,
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          trailing: widget.detailSurah == null
-                              ? null
-                              : PopupMenuButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  itemBuilder: (context) {
-                                    Map<String, dynamic> values = {
-                                      "surah_number":
-                                          widget.detailSurah!.number,
-                                      "surah_name": widget.detailSurah!.name
-                                          .transliteration!.id,
-                                      "juz": widget
-                                          .detailSurah!.verses[index].meta!.juz,
-                                      "ayat": verses[index].number!.inSurah
-                                    };
-
-                                    return [
-                                      PopupMenuItem(
-                                        value: values,
-                                        child: const Text(
-                                            "Tandai terakhir dibaca"),
+                                  Flexible(
+                                    child: IconButton(
+                                      onPressed: () {
+                                        myModalBottomSheet(
+                                          context: context,
+                                          content:
+                                              verses[index].tafsir!.id.long,
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.menu_book_outlined,
                                       ),
-                                    ];
-                                  },
-                                  onSelected: (value) {
-                                    context
-                                        .read<LastReadBloc>()
-                                        .add(InsertLastReadEvent(surah: value));
-                                  },
-                                ),
-                        ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: widget.detailSurah == null
+                                  ? null
+                                  : PopupMenuButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      itemBuilder: (context) {
+                                        Map<String, dynamic> values = {
+                                          "surah_number":
+                                              widget.detailSurah!.number,
+                                          "surah_name": widget.detailSurah!.name
+                                              .transliteration!.id,
+                                          "juz": widget.detailSurah!
+                                              .verses[index].meta!.juz,
+                                          "ayat": verses[index].number!.inSurah
+                                        };
+
+                                        return [
+                                          PopupMenuItem(
+                                            value: values,
+                                            child: const Text(
+                                                "Tandai terakhir dibaca"),
+                                          ),
+                                        ];
+                                      },
+                                      onSelected: (value) {
+                                        context.read<LastReadBloc>().add(
+                                            InsertLastReadEvent(surah: value));
+                                      },
+                                    ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 20),
                       Text(
                         ayat.text!.arab!,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 28,
+                          fontSize: 30,
                           fontFamily: 'Uthmanic',
                         ),
                         textDirection: TextDirection.rtl,

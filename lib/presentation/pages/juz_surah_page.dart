@@ -85,16 +85,14 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
             );
           } else if (state is JuzLoaded) {
             final result = state.result;
-            final verses = result.verses;
 
             return BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
               builder: (context, state) {
                 if (state is ShowingState) {
-                  return ListOfAyat(null, result);
+                  return ListOfAyat(juz: result);
                 } else if (state is HiddenState) {
                   return CardOfAyat(
-                    verses: verses,
-                    preBismillah: null,
+                    juz: result,
                   );
                 } else {
                   return Container();

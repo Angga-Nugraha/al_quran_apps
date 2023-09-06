@@ -12,4 +12,6 @@ abstract class SurahRepository {
   Future<Either<Failure, Juz>> getSurahJuz(int number);
   Future<Either<Failure, String>> insertLastRead(Map<String, dynamic> surah);
   Future<Either<Failure, Map<String, dynamic>>> getLastRead();
+  Future<Either<Failure, bool>> setReminderAlarm(bool value);
+  Future<Either<Failure, bool>> getReminder();
 }

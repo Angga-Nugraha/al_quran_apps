@@ -1,4 +1,7 @@
 import 'package:al_quran_apps/common/colors.dart';
+import 'package:al_quran_apps/common/routes.dart';
+import 'package:al_quran_apps/data/helpers/notification_helper.dart';
+import 'package:al_quran_apps/injection.dart';
 import 'package:al_quran_apps/presentation/pages/home_page.dart';
 import 'package:al_quran_apps/presentation/pages/second_page.dart';
 import 'package:al_quran_apps/presentation/pages/third_page.dart';
@@ -13,10 +16,10 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
+  late NotificationHelper notificationHelper;
   int _bottomNavIndex = 1;
-
   List<Widget> _listWidget() => [
-        const SecondPage(),
+        SecondPage(),
         const HomePage(),
         const ThirdPage(),
       ];
@@ -31,6 +34,20 @@ class _RootScreenState extends State<RootScreen> {
     setState(() {
       _bottomNavIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    notificationHelper = locator<NotificationHelper>();
+
+    notificationHelper.configureSelectNotificationSubject(detailPageRoutes);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    selectNotificationSubject.close();
   }
 
   @override

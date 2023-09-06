@@ -1,4 +1,5 @@
 import 'package:al_quran_apps/common/routes.dart';
+import 'package:al_quran_apps/data/helpers/notification_helper.dart';
 import 'package:al_quran_apps/domain/entities/surah/surah.dart';
 import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/search_surah/search_surah_bloc.dart';
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late TabController _controller;
 
+  late NotificationHelper notificationHelper;
   @override
   void initState() {
     super.initState();

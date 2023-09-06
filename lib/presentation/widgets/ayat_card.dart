@@ -51,50 +51,55 @@ class _CardOfAyatState extends State<CardOfAyat> {
                   ? () {}
                   : checkLastRead(state.result, verses[index].number!.inSurah!);
             }
-            return ContextMenuRegion(
-              contextMenu: GenericContextMenu(buttonConfigs: [
-                ContextMenuButtonConfig(
-                  icon: const Icon(Icons.push_pin),
-                  "Tandai terakhir dibaca",
-                  onPressed: () {
-                    Map<String, dynamic> values = {
-                      "surah_number": widget.detailSurah!.number,
-                      "surah_name":
-                          widget.detailSurah!.name.transliteration!.id,
-                      "juz": verses[index].meta!.juz,
-                      "ayat": verses[index].number!.inSurah
-                    };
-                    context
-                        .read<LastReadBloc>()
-                        .add(InsertLastReadEvent(surah: values));
-                  },
-                ),
-              ]),
-              child: Text.rich(
-                TextSpan(
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text: verses[index].text!.arab!,
-                    ),
-                    TextSpan(
-                      text:
-                          arabicNumber.convert(verses[index].number!.inSurah!),
-                    ),
-                  ],
-                ),
-                textDirection: TextDirection.rtl,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Uthmanic",
-                  fontSize: 30,
-                  color: isLastRead ? Colors.green : Colors.black,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            );
+            return widget.detailSurah == null
+                ? _buildAyah(verses, index)
+                : ContextMenuRegion(
+                    contextMenu: GenericContextMenu(buttonConfigs: [
+                      ContextMenuButtonConfig(
+                        icon: const Icon(Icons.push_pin),
+                        "Tandai terakhir dibaca",
+                        onPressed: () {
+                          Map<String, dynamic> values = {
+                            "surah_number": widget.detailSurah!.number,
+                            "surah_name":
+                                widget.detailSurah!.name.transliteration!.id,
+                            "juz": verses[index].meta!.juz,
+                            "ayat": verses[index].number!.inSurah
+                          };
+                          context
+                              .read<LastReadBloc>()
+                              .add(InsertLastReadEvent(surah: values));
+                        },
+                      ),
+                    ]),
+                    child: _buildAyah(verses, index),
+                  );
           },
         ),
       ),
+    );
+  }
+
+  Text _buildAyah(List<Verses> verses, int index) {
+    return Text.rich(
+      TextSpan(
+        children: <InlineSpan>[
+          TextSpan(
+            text: verses[index].text!.arab!,
+          ),
+          TextSpan(
+            text: arabicNumber.convert(verses[index].number!.inSurah!),
+          ),
+        ],
+      ),
+      textDirection: TextDirection.rtl,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontFamily: "Uthmanic",
+        fontSize: 30,
+        color: isLastRead ? Colors.green : Colors.black,
+      ),
+      textAlign: TextAlign.center,
     );
   }
 

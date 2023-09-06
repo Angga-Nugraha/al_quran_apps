@@ -1,4 +1,5 @@
 import 'package:al_quran_apps/common/routes.dart';
+import 'package:al_quran_apps/common/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/colors.dart';
@@ -18,8 +19,7 @@ class LastReadBanner extends StatelessWidget {
       splashColor: kDavysGrey,
       onTap: () {
         if (lastRead.isNotEmpty) {
-          Navigator.pushNamed(context, detailPageRoutes,
-              arguments: lastRead['surah_number']);
+          Navigation.intentWithData(detailPageRoutes, lastRead['surah_number']);
         }
       },
       child: Card(

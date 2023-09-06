@@ -1,3 +1,4 @@
+import 'package:al_quran_apps/common/utils.dart';
 import 'package:arabic_numbers/arabic_numbers.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +19,9 @@ class SurahList extends StatelessWidget {
         final listSurah = surah[index];
         return InkWell(
           onTap: () {
-            Navigator.pushNamed(
-              context,
+            Navigation.intentWithData(
               detailPageRoutes,
-              arguments: listSurah.number,
+              listSurah.number!,
             );
           },
           child: Column(

@@ -2,10 +2,15 @@ import 'dart:io';
 
 import 'package:al_quran_apps/common/network_info.dart';
 import 'package:al_quran_apps/data/datasource/local_data_source.dart';
+import 'package:al_quran_apps/data/helpers/background_service.dart';
+import 'package:al_quran_apps/data/helpers/date_time_helper.dart';
+import 'package:al_quran_apps/data/helpers/preference_helper.dart';
 import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:al_quran_apps/data/models/database_model/surah_tabel.dart';
 import 'package:al_quran_apps/domain/entities/juz.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 
 import '../../common/exception.dart';
 import '../../common/failure.dart';
@@ -18,11 +23,13 @@ class SurahRepositoryImpl implements SurahRepository {
   final SurahDataSource surahRemoteDataSource;
   final SurahLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
+  final PreferencesHelper preferencesHelper;
 
   SurahRepositoryImpl({
     required this.surahRemoteDataSource,
     required this.localDataSource,
     required this.networkInfo,
+    required this.preferencesHelper,
   });
 
   @override
@@ -103,6 +110,41 @@ class SurahRepositoryImpl implements SurahRepository {
     try {
       final result = await localDataSource.getLastRead();
       return Right(result.toJson());
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> setReminderAlarm(bool value) async {
+    try {
+      if (value) {
+        debugPrint('Reminder active');
+        preferencesHelper.setDailyReminder(value);
+        return await AndroidAlarmManager.periodic(
+          const Duration(hours: 24),
+          1,
+          BackgroundService.callback,
+          startAt: DateTimeHelper.format(),
+          exact: true,
+          wakeup: true,
+        ).then((value) => const Right(true));
+      } else {
+        debugPrint('Reminder Canceled');
+        preferencesHelper.setDailyReminder(false);
+        return await AndroidAlarmManager.cancel(1)
+            .then((value) => const Right(false));
+      }
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> getReminder() async {
+    try {
+      final result = await preferencesHelper.isReminder;
+      return Right(result);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
     }

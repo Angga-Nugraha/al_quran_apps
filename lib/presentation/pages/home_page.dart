@@ -6,7 +6,6 @@ import 'package:al_quran_apps/presentation/bloc/search_surah/search_surah_bloc.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../common/colors.dart';
 import '../bloc/list_surah/list_surah_bloc.dart';
 import '../widgets/last_read_banner.dart';
 import '../widgets/list_of_surah.dart';
@@ -85,17 +84,13 @@ class _HomePageState extends State<HomePage>
                         ),
                       )
                     : const Text(
-                        'Al-Qur\'an',
+                        'Al-Qur\'an Evo',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          color: darkColor,
-                        ),
+                            fontSize: 30, fontWeight: FontWeight.bold),
                       ),
                 IconButton(
                   icon: Icon(
                     icon,
-                    color: darkColor,
                   ),
                   onPressed: () {
                     if (icon == Icons.cancel_outlined) {
@@ -125,29 +120,30 @@ class _HomePageState extends State<HomePage>
               } else if (state is LastReadHasError) {
                 return const LastReadBanner(lastRead: {});
               }
-              return Container();
+              return const SizedBox();
             },
           ),
-          const Divider(thickness: 2),
+
           TabBar(
             splashBorderRadius: BorderRadius.circular(10),
-            indicatorSize: TabBarIndicatorSize.label,
-            dividerColor: kDavysGrey,
             isScrollable: true,
-            indicatorColor: darkColor,
-            indicatorWeight: 3,
             controller: _controller,
-            labelColor: darkColor,
             labelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
               fontSize: 20,
             ),
-            tabs: const [
-              Tab(
-                text: 'Surah',
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            tabs: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2.5,
+                child: const Center(
+                  child: Tab(text: 'Surah'),
+                ),
               ),
-              Tab(
-                text: 'Juz',
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2.5,
+                child: const Center(
+                  child: Tab(text: 'Juz'),
+                ),
               ),
             ],
           ),
@@ -216,18 +212,15 @@ class _HomePageState extends State<HomePage>
                         child: Card(
                           margin: const EdgeInsets.all(10),
                           elevation: 4,
-                          shadowColor: kDavysGrey,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
                                 Icons.folder_open,
-                                color: darkColor,
                               ),
                               Text(
                                 'Juz ${(index + 1)}',
                                 style: const TextStyle(
-                                  color: darkColor,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),

@@ -15,10 +15,13 @@ import 'package:al_quran_apps/domain/usecases/surah/get_reminder.dart';
 import 'package:al_quran_apps/domain/usecases/surah/insert_last_read.dart';
 import 'package:al_quran_apps/domain/usecases/surah/search_surah.dart';
 import 'package:al_quran_apps/domain/usecases/surah/set_reminder_alarm.dart';
+import 'package:al_quran_apps/domain/usecases/theme/get_dark_theme.dart';
+import 'package:al_quran_apps/domain/usecases/theme/set_dark_theme.dart';
 import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/reminder_bloc/reminder_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/search_surah/search_surah_bloc.dart';
 import 'package:al_quran_apps/presentation/bloc/show_translate/show_tanslate_bloc.dart';
+import 'package:al_quran_apps/presentation/bloc/theme_bloc/theme_bloc.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
@@ -68,6 +71,12 @@ Future<void> init() async {
       getReminderAlarm: locator(),
     ),
   );
+  locator.registerFactory(
+    () => ThemeBloc(
+      setDarkTheme: locator(),
+      getDarkTheme: locator(),
+    ),
+  );
 
 // ===================== USECASE ==============================
   locator.registerLazySingleton(() => GetListSurah(locator()));
@@ -85,6 +94,8 @@ Future<void> init() async {
   locator.registerLazySingleton(() => SkipToNext(locator()));
   locator.registerLazySingleton(() => SetReminderAlarm(locator()));
   locator.registerLazySingleton(() => GetReminderAlarm(locator()));
+  locator.registerLazySingleton(() => SetDarkTheme(locator()));
+  locator.registerLazySingleton(() => GetDarkTheme(locator()));
 
 // ===================== REPOSITORY ==========================
   locator.registerLazySingleton<SurahRepository>(

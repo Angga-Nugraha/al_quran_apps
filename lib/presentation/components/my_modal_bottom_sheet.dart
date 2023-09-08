@@ -3,23 +3,17 @@ part of 'components_helpers.dart';
 Future<dynamic> myModalBottomSheet(
     {required BuildContext context, required String content}) {
   return showModalBottomSheet(
-    backgroundColor: backgroundColor,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
-    ),
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     isScrollControlled: true,
+    useSafeArea: true,
     context: context,
     builder: (context) {
       return Container(
         padding: const EdgeInsets.all(10),
-        height: 500,
         child: Column(
           children: [
             Container(
-              color: foregroundColor,
+              color: Theme.of(context).colorScheme.onPrimary,
               height: 4,
               width: 48,
               margin: const EdgeInsets.all(10),
@@ -31,7 +25,6 @@ Future<dynamic> myModalBottomSheet(
               ),
             ),
             const Divider(
-              color: kDavysGrey,
               thickness: 2,
             ),
             Flexible(
@@ -40,6 +33,7 @@ Future<dynamic> myModalBottomSheet(
                 height: MediaQuery.of(context).size.height,
                 child: SizedBox(
                   child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     child: Center(
                       child: Text(
                         content,

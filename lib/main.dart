@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:al_quran_apps/common/styles.dart';
 import 'package:al_quran_apps/data/helpers/notification_helper.dart';
+import 'package:al_quran_apps/presentation/bloc/reminder_bloc/reminder_bloc.dart';
+import 'package:al_quran_apps/presentation/bloc/theme_bloc/theme_bloc.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +13,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:provider/provider.dart';
 
-import 'common/colors.dart';
 import 'common/routes.dart';
 import 'common/utils.dart';
 
@@ -37,6 +39,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
 
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+      .requestPermission();
   if (Platform.isAndroid) {
     await AndroidAlarmManager.initialize();
   }
@@ -55,6 +61,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AudioHandler audioHandler;
+  bool isDarkTheme = false;
   @override
   void initState() {
     audioHandler = di.locator<AudioHandler>();
@@ -86,49 +93,64 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => di.locator<SearchSurahBloc>()),
         BlocProvider(create: (_) => di.locator<JuzBloc>()),
         BlocProvider(create: (_) => di.locator<LastReadBloc>()),
+        BlocProvider(
+          create: (_) => di.locator<ReminderBloc>()..add(GetReminder()),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<ThemeBloc>()..add(GetDarkEvent()),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        navigatorKey: navigatorKey,
-        theme: ThemeData.light().copyWith(
-          colorScheme: kColorScheme,
-        ),
-        navigatorObservers: [routeObserver],
-        home: FutureBuilder(
-          future: Future.delayed(const Duration(seconds: 5)),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const SplashScreen();
-            }
-            return const LandingPage();
-          },
-        ),
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case homePageRoutes:
-              return MaterialPageRoute(builder: (_) => const HomePage());
-            case rootScreenPageRoutes:
-              return MaterialPageRoute(builder: (_) => const RootScreen());
-
-            case detailPageRoutes:
-              final number = settings.arguments as int;
-              return MaterialPageRoute(
-                builder: (_) => DetailSurahPage(number: number),
-                settings: settings,
-              );
-            case juzPageRoutes:
-              final number = settings.arguments as int;
-              return MaterialPageRoute(
-                  builder: (_) => JuzSurahPage(number: number));
-            default:
-              return MaterialPageRoute(builder: (_) {
-                return const Scaffold(
-                  body: Center(
-                    child: Text('Page not found :('),
-                  ),
-                );
-              });
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          if (state is IsDarkTheme) {
+            isDarkTheme = state.value;
+          } else if (state is DarkThemeHasData) {
+            isDarkTheme = state.value;
+          } else if (state is DarkThemeHasError) {
+            isDarkTheme = false;
           }
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
+            theme: isDarkTheme ? darkTheme : lightTheme,
+            navigatorObservers: [routeObserver],
+            home: FutureBuilder(
+              future: Future.delayed(const Duration(seconds: 5)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SplashScreen();
+                }
+                return const LandingPage();
+              },
+            ),
+            onGenerateRoute: (RouteSettings settings) {
+              switch (settings.name) {
+                case homePageRoutes:
+                  return MaterialPageRoute(builder: (_) => const HomePage());
+                case rootScreenPageRoutes:
+                  return MaterialPageRoute(builder: (_) => const RootScreen());
+
+                case detailPageRoutes:
+                  final number = settings.arguments as int;
+                  return MaterialPageRoute(
+                    builder: (_) => DetailSurahPage(number: number),
+                    settings: settings,
+                  );
+                case juzPageRoutes:
+                  final number = settings.arguments as int;
+                  return MaterialPageRoute(
+                      builder: (_) => JuzSurahPage(number: number));
+                default:
+                  return MaterialPageRoute(builder: (_) {
+                    return const Scaffold(
+                      body: Center(
+                        child: Text('Page not found :('),
+                      ),
+                    );
+                  });
+              }
+            },
+          );
         },
       ),
     );

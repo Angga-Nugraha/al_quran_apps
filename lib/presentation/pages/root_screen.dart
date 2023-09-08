@@ -1,12 +1,14 @@
-import 'package:al_quran_apps/common/colors.dart';
+import 'package:al_quran_apps/common/styles.dart';
 import 'package:al_quran_apps/common/routes.dart';
 import 'package:al_quran_apps/data/helpers/notification_helper.dart';
 import 'package:al_quran_apps/injection.dart';
+import 'package:al_quran_apps/presentation/bloc/theme_bloc/theme_bloc.dart';
 import 'package:al_quran_apps/presentation/pages/home_page.dart';
-import 'package:al_quran_apps/presentation/pages/second_page.dart';
+import 'package:al_quran_apps/presentation/pages/settings_page.dart';
 import 'package:al_quran_apps/presentation/pages/third_page.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -18,6 +20,7 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   late NotificationHelper notificationHelper;
   int _bottomNavIndex = 1;
+  bool isDarkTheme = false;
   List<Widget> _listWidget() => [
         SecondPage(),
         const HomePage(),
@@ -55,13 +58,28 @@ class _RootScreenState extends State<RootScreen> {
     final List<Widget> listWidget = _listWidget();
     return Scaffold(
       body: listWidget[_bottomNavIndex],
-      bottomNavigationBar: ConvexAppBar(
-        backgroundColor: kOxfordBlue,
-        activeColor: darkColor,
-        style: TabStyle.reactCircle,
-        items: _tabData,
-        initialActiveIndex: _bottomNavIndex,
-        onTap: _onBottomNavTapped,
+      bottomNavigationBar: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          if (state is IsDarkTheme) {
+            isDarkTheme = state.value;
+          } else if (state is DarkThemeHasData) {
+            isDarkTheme = state.value;
+          } else if (state is DarkThemeHasError) {
+            isDarkTheme = false;
+          } else {
+            isDarkTheme = false;
+          }
+          return ConvexAppBar(
+            backgroundColor: isDarkTheme
+                ? ThemeData.dark().colorScheme.surface
+                : primaryColor,
+            activeColor: onPrimary,
+            style: TabStyle.reactCircle,
+            items: _tabData,
+            initialActiveIndex: _bottomNavIndex,
+            onTap: _onBottomNavTapped,
+          );
+        },
       ),
     );
   }

@@ -32,7 +32,6 @@ class SurahLocalDataSourceImpl implements SurahLocalDataSource {
 
   @override
   Future<void> insertLastRead(LastReadTable surah) async {
-    getLastRead();
     await databaseHelper.clearCache('Last_read', 'last read');
     await databaseHelper.insertlastReadTransaction(surah, 'last read');
   }
@@ -45,7 +44,7 @@ class SurahLocalDataSourceImpl implements SurahLocalDataSource {
 
       return data;
     } else {
-      throw CacheException('Cant get the data');
+      throw CacheException('');
     }
   }
 }

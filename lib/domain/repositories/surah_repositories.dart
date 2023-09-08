@@ -14,4 +14,6 @@ abstract class SurahRepository {
   Future<Either<Failure, Map<String, dynamic>>> getLastRead();
   Future<Either<Failure, bool>> setReminderAlarm(bool value);
   Future<Either<Failure, bool>> getReminder();
+  Future<Either<Failure, bool>> setDarkTheme(bool value);
+  Future<Either<Failure, bool>> getDarkTheme();
 }

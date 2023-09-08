@@ -7,8 +7,6 @@ import 'package:al_quran_apps/presentation/widgets/list_of_ayat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../common/colors.dart';
-
 class JuzSurahPage extends StatefulWidget {
   final int number;
   const JuzSurahPage({required this.number, super.key});
@@ -36,14 +34,7 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: darkColor,
         elevation: 2,
-        shadowColor: darkColor,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-              bottomRight: Radius.circular(10)),
-        ),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -53,7 +44,6 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
         title: Image.asset(
           'assets/images/bismillah.png',
           height: 28,
-          color: darkColor,
         ),
         centerTitle: true,
         actions: [
@@ -112,7 +102,7 @@ class _JuzSurahPageState extends State<JuzSurahPage> {
         },
       ),
       bottomNavigationBar: Container(
-        color: kOxfordBlue,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

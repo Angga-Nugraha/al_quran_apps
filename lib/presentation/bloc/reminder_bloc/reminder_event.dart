@@ -16,11 +16,3 @@ class Remindered extends ReminderEvent {
   @override
   List<Object> get props => [value];
 }
-
-class ReminderCancel extends ReminderEvent {
-  final bool value;
-  const ReminderCancel(this.value);
-
-  @override
-  List<Object> get props => [value];
-}

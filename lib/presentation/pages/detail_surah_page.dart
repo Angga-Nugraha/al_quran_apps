@@ -5,7 +5,6 @@ import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../common/colors.dart';
 import '../../domain/entities/detail_surah/detail_surah.dart';
 import '../bloc/detail_surah/detail_surah_bloc.dart';
 import '../components/components_helpers.dart';
@@ -50,9 +49,7 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
     return ContextMenuOverlay(
       child: Scaffold(
         appBar: AppBar(
-          foregroundColor: darkColor,
           elevation: 2,
-          shadowColor: darkColor,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -62,7 +59,13 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
           title: BlocBuilder<DetailSurahBloc, DetailSurahState>(
             builder: (context, state) {
               if (state is DetailSurahHasData) {
-                return Text(state.result.name.transliteration!.id!);
+                return Text(
+                  state.result.name.transliteration!.id!,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
               }
               return const Text('');
             },
@@ -91,25 +94,20 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
               );
             } else if (state is DetailSurahHasData) {
               surah = state.result;
-              return Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
-                    builder: (context, state) {
-                      if (state is ShowingState) {
-                        isTranslate = state.result;
-                        return ListOfAyat(detailSurah: surah);
-                      } else if (state is HiddenState) {
-                        isTranslate = state.result;
-                        return CardOfAyat(
-                          detailSurah: surah,
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                ],
+              return BlocBuilder<ShowTranslateBloc, ShowTranslateState>(
+                builder: (context, state) {
+                  if (state is ShowingState) {
+                    isTranslate = state.result;
+                    return ListOfAyat(detailSurah: surah);
+                  } else if (state is HiddenState) {
+                    isTranslate = state.result;
+                    return CardOfAyat(
+                      detailSurah: surah,
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               );
             } else if (state is DetailSurahError) {
               final message = state.message;
@@ -125,7 +123,8 @@ class _DetailSurahPageState extends State<DetailSurahPage> {
           },
         ),
         bottomNavigationBar: Container(
-          color: kDavysGrey,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          padding: const EdgeInsets.all(5.0),
           height: 60,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

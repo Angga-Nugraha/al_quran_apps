@@ -2,8 +2,6 @@ import 'package:al_quran_apps/common/routes.dart';
 import 'package:al_quran_apps/common/utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/colors.dart';
-
 class LastReadBanner extends StatelessWidget {
   const LastReadBanner({
     required this.lastRead,
@@ -16,7 +14,6 @@ class LastReadBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(15),
-      splashColor: kDavysGrey,
       onTap: () {
         if (lastRead.isNotEmpty) {
           Navigation.intentWithData(detailPageRoutes, lastRead['surah_number']);
@@ -25,13 +22,12 @@ class LastReadBanner extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.all(10.0),
         elevation: 2,
-        shadowColor: kDavysGrey,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Container(
+          padding: const EdgeInsets.all(10.0),
           height: MediaQuery.of(context).size.height * 0.15,
           width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-          ),
           child: Stack(
             children: [
               Positioned(
@@ -49,19 +45,15 @@ class LastReadBanner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Row(
+                    const Row(
                       children: [
-                        Image.asset(
-                          'assets/icons/icon-1.png',
-                          color: darkColor,
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
+                        Icon(Icons.menu_book),
+                        SizedBox(width: 8),
+                        Text(
                           'Terakhir dibaca',
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                            color: darkColor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -70,19 +62,19 @@ class LastReadBanner extends StatelessWidget {
                     Text(
                       lastRead.isNotEmpty ? lastRead['surah_name'] : 'Empty',
                       style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          color: darkColor,
-                          letterSpacing: 1.5),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
                     ),
                     Text(
                       lastRead.isNotEmpty
                           ? 'Juz: ${lastRead['juz']}, Ayat: ${lastRead['ayat']}'
                           : '',
                       style: const TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: darkColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.5,
                       ),
                     ),
                   ],

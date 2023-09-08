@@ -122,7 +122,7 @@ class SurahRepositoryImpl implements SurahRepository {
         debugPrint('Reminder active');
         preferencesHelper.setDailyReminder(value);
         return await AndroidAlarmManager.periodic(
-          const Duration(hours: 24),
+          const Duration(hours: 12),
           1,
           BackgroundService.callback,
           startAt: DateTimeHelper.format(),
@@ -136,7 +136,7 @@ class SurahRepositoryImpl implements SurahRepository {
             .then((value) => const Right(false));
       }
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(CacheFailure(e.toString()));
     }
   }
 
@@ -147,6 +147,26 @@ class SurahRepositoryImpl implements SurahRepository {
       return Right(result);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> getDarkTheme() async {
+    try {
+      final result = await preferencesHelper.isDarkTheme;
+      return Right(result);
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> setDarkTheme(bool value) async {
+    try {
+      preferencesHelper.setDarkTheme(value);
+      return Right(value);
+    } catch (e) {
+      throw Left(CacheFailure(e.toString()));
     }
   }
 }

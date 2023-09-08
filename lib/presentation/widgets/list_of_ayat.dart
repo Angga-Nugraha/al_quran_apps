@@ -1,4 +1,3 @@
-import 'package:al_quran_apps/common/colors.dart';
 import 'package:al_quran_apps/domain/entities/detail_surah/detail_surah.dart';
 import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
 import 'package:al_quran_apps/presentation/components/components_helpers.dart';
@@ -46,156 +45,160 @@ class _ListOfAyatState extends State<ListOfAyat> {
     final preBismillah = widget.detailSurah == null
         ? null
         : widget.detailSurah!.preBismillah.text!.arab;
-    return Scaffold(
-      body: BlocListener<LastReadBloc, LastReadState>(
-        listener: (context, state) {
-          if (state is LastReadHasSuccess) {
-            mySnackbar(context: context, message: "Add to Last read");
-            context.read<LastReadBloc>().add(GetLastReadEvent());
-          }
-        },
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20.0),
-          children: [
-            preBismillah == null
-                ? const SizedBox()
-                : Text(
-                    preBismillah,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Uthmanic",
-                      fontSize: 30,
-                    ),
+    return BlocListener<LastReadBloc, LastReadState>(
+      listener: (context, state) {
+        if (state is LastReadHasSuccess) {
+          mySnackbar(context: context, message: "Add to Last read");
+        }
+      },
+      child: ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(20.0),
+        children: [
+          preBismillah == null
+              ? const SizedBox()
+              : Text(
+                  preBismillah,
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Uthmanic",
+                    fontSize: 30,
                   ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                final ayat = verses[index];
-                return Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      BlocBuilder<LastReadBloc, LastReadState>(
-                        builder: (context, state) {
-                          if (state is LastReadHasData) {
-                            widget.detailSurah == null
-                                ? () {}
-                                : checkLastRead(
-                                    state.result, ayat.number!.inSurah!);
-                          }
-                          return Container(
-                            color: isLastRead ? Colors.green : kDavysGrey,
-                            child: ListTile(
-                              iconColor: darkColor,
-                              textColor: darkColor,
-                              leading: Text(
-                                arabicNumber.convert(ayat.number!.inSurah),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Uthmanic",
-                                  fontSize: 30,
+                ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              final ayat = verses[index];
+              return Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    BlocBuilder<LastReadBloc, LastReadState>(
+                      builder: (context, state) {
+                        if (state is LastReadHasData) {
+                          widget.detailSurah == null
+                              ? () {}
+                              : checkLastRead(
+                                  state.result, ayat.number!.inSurah!);
+                        }
+
+                        return ListTile(
+                          tileColor: isLastRead
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.onPrimary,
+                          leading: Text(
+                            arabicNumber.convert(ayat.number!.inSurah),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Uthmanic",
+                              fontSize: 30,
+                              color: isLastRead
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : Theme.of(context).colorScheme.surface,
+                            ),
+                          ),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width,
                                 ),
                               ),
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Expanded(
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                    ),
+                              Flexible(
+                                child: IconButton(
+                                  onPressed: () {
+                                    myModalBottomSheet(
+                                      context: context,
+                                      content: verses[index].tafsir!.id.long,
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.menu_book_outlined,
+                                    color: isLastRead
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary
+                                        : Theme.of(context).colorScheme.surface,
                                   ),
-                                  Flexible(
-                                    child: IconButton(
-                                      onPressed: () {
-                                        myModalBottomSheet(
-                                          context: context,
-                                          content:
-                                              verses[index].tafsir!.id.long,
-                                        );
-                                      },
-                                      icon: const Icon(
-                                        Icons.menu_book_outlined,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                              trailing: widget.detailSurah == null
-                                  ? null
-                                  : PopupMenuButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      itemBuilder: (context) {
-                                        Map<String, dynamic> values = {
-                                          "surah_number":
-                                              widget.detailSurah!.number,
-                                          "surah_name": widget.detailSurah!.name
-                                              .transliteration!.id,
-                                          "juz": widget.detailSurah!
-                                              .verses[index].meta!.juz,
-                                          "ayat": verses[index].number!.inSurah
-                                        };
+                            ],
+                          ),
+                          trailing: widget.detailSurah == null
+                              ? null
+                              : PopupMenuButton(
+                                  color: isLastRead
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.surface,
+                                  itemBuilder: (context) {
+                                    Map<String, dynamic> values = {
+                                      "surah_number":
+                                          widget.detailSurah!.number,
+                                      "surah_name": widget.detailSurah!.name
+                                          .transliteration!.id,
+                                      "juz": widget
+                                          .detailSurah!.verses[index].meta!.juz,
+                                      "ayat": verses[index].number!.inSurah
+                                    };
 
-                                        return [
-                                          PopupMenuItem(
-                                            value: values,
-                                            child: const Text(
-                                                "Tandai terakhir dibaca"),
-                                          ),
-                                        ];
-                                      },
-                                      onSelected: (value) {
-                                        context.read<LastReadBloc>().add(
-                                            InsertLastReadEvent(surah: value));
-                                      },
-                                    ),
-                            ),
-                          );
-                        },
+                                    return [
+                                      PopupMenuItem(
+                                        value: values,
+                                        child: const Text(
+                                            "Tandai terakhir dibaca"),
+                                      ),
+                                    ];
+                                  },
+                                  onSelected: (value) {
+                                    context
+                                        .read<LastReadBloc>()
+                                        .add(InsertLastReadEvent(surah: value));
+                                  },
+                                ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      ayat.text!.arab!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 30,
+                        fontFamily: 'Uthmanic',
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        ayat.text!.arab!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 30,
-                          fontFamily: 'Uthmanic',
-                        ),
-                        textDirection: TextDirection.rtl,
+                      textDirection: TextDirection.rtl,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '"${ayat.text!.transliteration!.en}"',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
                       ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '"${ayat.text!.transliteration!.en}"',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          fontStyle: FontStyle.italic,
-                        ),
-                        textAlign: TextAlign.justify,
+                      textAlign: TextAlign.justify,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      '"${ayat.translation!.id}"',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        '"${ayat.translation!.id}"',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.justify,
-                      ),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
-                );
-              },
-              itemCount: verses.length,
-            ),
-          ],
-        ),
+                      textAlign: TextAlign.justify,
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              );
+            },
+            itemCount: verses.length,
+          ),
+        ],
       ),
     );
   }

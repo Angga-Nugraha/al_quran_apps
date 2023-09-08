@@ -17,6 +17,7 @@ class LastReadBloc extends Bloc<LastReadEvent, LastReadState> {
         (failure) => emit(LastReadHasError(message: failure.message)),
         (data) => emit(LastReadHasSuccess(result: data)),
       );
+      add(GetLastReadEvent());
     });
     on<GetLastReadEvent>((event, emit) async {
       final result = await getLastRead.execute();

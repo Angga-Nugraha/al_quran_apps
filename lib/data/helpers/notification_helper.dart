@@ -19,11 +19,6 @@ class NotificationHelper {
 
   Future<void> initNotification(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestPermission();
-
     var initializationSettingsAndroid =
         const AndroidInitializationSettings('app_icon');
 

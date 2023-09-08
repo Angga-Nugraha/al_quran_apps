@@ -54,24 +54,25 @@ class _CardOfAyatState extends State<CardOfAyat> {
             return widget.detailSurah == null
                 ? _buildAyah(verses, index)
                 : ContextMenuRegion(
-                    contextMenu: GenericContextMenu(buttonConfigs: [
-                      ContextMenuButtonConfig(
-                        icon: const Icon(Icons.push_pin),
-                        "Tandai terakhir dibaca",
-                        onPressed: () {
-                          Map<String, dynamic> values = {
-                            "surah_number": widget.detailSurah!.number,
-                            "surah_name":
-                                widget.detailSurah!.name.transliteration!.id,
-                            "juz": verses[index].meta!.juz,
-                            "ayat": verses[index].number!.inSurah
-                          };
-                          context
-                              .read<LastReadBloc>()
-                              .add(InsertLastReadEvent(surah: values));
-                        },
-                      ),
-                    ]),
+                    contextMenu: GenericContextMenu(
+                      buttonConfigs: [
+                        ContextMenuButtonConfig(
+                          "Tandai terakhir dibaca",
+                          onPressed: () {
+                            Map<String, dynamic> values = {
+                              "surah_number": widget.detailSurah!.number,
+                              "surah_name":
+                                  widget.detailSurah!.name.transliteration!.id,
+                              "juz": verses[index].meta!.juz,
+                              "ayat": verses[index].number!.inSurah
+                            };
+                            context
+                                .read<LastReadBloc>()
+                                .add(InsertLastReadEvent(surah: values));
+                          },
+                        ),
+                      ],
+                    ),
                     child: _buildAyah(verses, index),
                   );
           },
@@ -97,7 +98,7 @@ class _CardOfAyatState extends State<CardOfAyat> {
         fontWeight: FontWeight.bold,
         fontFamily: "Uthmanic",
         fontSize: 30,
-        color: isLastRead ? Colors.green : Colors.black,
+        color: isLastRead ? Theme.of(context).colorScheme.error : null,
       ),
       textAlign: TextAlign.center,
     );
@@ -116,7 +117,6 @@ class _CardOfAyatState extends State<CardOfAyat> {
       listener: (context, state) {
         if (state is LastReadHasSuccess) {
           mySnackbar(context: context, message: "Add to Last read");
-          context.read<LastReadBloc>().add(GetLastReadEvent());
         }
       },
       child: Container(
@@ -132,6 +132,7 @@ class _CardOfAyatState extends State<CardOfAyat> {
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,

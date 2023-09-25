@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i5;
 
-import 'package:al_quran_apps/common/failure.dart' as _i6;
+import 'package:al_quran_apps/data/common/failure.dart' as _i6;
 import 'package:al_quran_apps/domain/entities/detail_surah/detail_surah.dart'
     as _i7;
 import 'package:al_quran_apps/domain/repositories/surah_repositories.dart'

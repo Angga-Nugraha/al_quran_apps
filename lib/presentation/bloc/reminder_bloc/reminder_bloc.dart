@@ -34,13 +34,5 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
         },
       );
     });
-    // on<ReminderCancel>((event, emit) async {
-    //   final result = await setReminderAlarm.execute(event.value);
-
-    //   result.fold(
-    //     (failure) => emit(ReminderedError(failure.message)),
-    //     (data) => emit(CanceledAlarm(data)),
-    //   );
-    // });
   }
 }

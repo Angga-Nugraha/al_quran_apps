@@ -6,23 +6,6 @@ const Color secondaryColor = Color(0xFFCD77F2);
 const Color onSecondary = Color(0xFFE5B6F2);
 const Color foregroundColor = Color(0xff9D1DF2);
 
-TextTheme myTextTheme = const TextTheme(
-  displayLarge:
-      TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: primaryColor),
-  displayMedium: TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 20,
-    color: Colors.white,
-    letterSpacing: 1.5,
-  ),
-  displaySmall: TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 16,
-    color: Colors.white,
-    letterSpacing: 1.5,
-  ),
-);
-
 const kColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: primaryColor,
@@ -44,6 +27,20 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
       foregroundColor: Colors.black,
     ),
   ),
+  tabBarTheme: TabBarTheme(
+    indicatorSize: TabBarIndicatorSize.tab,
+    labelStyle: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+    indicator: BoxDecoration(
+      gradient: LinearGradient(colors: [
+        Colors.grey,
+        Colors.grey.shade900,
+      ]),
+      borderRadius: BorderRadius.circular(30),
+    ),
+  ),
   popupMenuTheme: PopupMenuThemeData(
     textStyle: const TextStyle(
         color: Colors.white,
@@ -59,9 +56,19 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
 ThemeData lightTheme = ThemeData.light().copyWith(
   colorScheme: kColorScheme,
   scaffoldBackgroundColor: onPrimary,
-  tabBarTheme: const TabBarTheme(
+  tabBarTheme: TabBarTheme(
     dividerColor: primaryColor,
     labelColor: primaryColor,
+    unselectedLabelColor: foregroundColor,
+    indicatorSize: TabBarIndicatorSize.tab,
+    labelStyle: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    ),
+    indicator: BoxDecoration(
+        gradient: const LinearGradient(colors: [foregroundColor, onSecondary]),
+        borderRadius: BorderRadius.circular(30),
+        color: secondaryColor),
   ),
   popupMenuTheme: PopupMenuThemeData(
     color: primaryColor,
@@ -77,6 +84,5 @@ ThemeData lightTheme = ThemeData.light().copyWith(
   iconTheme: const IconThemeData(
     color: primaryColor,
   ),
-  cardColor: onSecondary.withOpacity(0.5),
   visualDensity: VisualDensity.adaptivePlatformDensity,
 );

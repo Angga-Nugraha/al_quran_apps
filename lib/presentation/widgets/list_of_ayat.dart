@@ -1,11 +1,4 @@
-import 'package:al_quran_apps/domain/entities/detail_surah/detail_surah.dart';
-import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
-import 'package:al_quran_apps/presentation/components/components_helpers.dart';
-import 'package:arabic_numbers/arabic_numbers.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../domain/entities/juz.dart';
+part of 'components_helpers.dart';
 
 class ListOfAyat extends StatefulWidget {
   const ListOfAyat({this.detailSurah, this.juz, super.key});
@@ -19,32 +12,30 @@ class ListOfAyat extends StatefulWidget {
 
 class _ListOfAyatState extends State<ListOfAyat> {
   final arabicNumber = ArabicNumbers();
-  static bool isLastRead = false;
+  bool? isLastRead;
+  List<Verses> verses = [];
+  String? preBismillah;
 
   @override
   void initState() {
     Future.microtask(() => BlocProvider.of<LastReadBloc>(context, listen: false)
         .add(GetLastReadEvent()));
+    verses = widget.detailSurah == null
+        ? widget.juz!.verses
+        : widget.detailSurah!.verses;
+    preBismillah = widget.detailSurah == null
+        ? null
+        : widget.detailSurah!.preBismillah.text!.arab;
     super.initState();
   }
 
-  void checkLastRead(Map<String, dynamic> data, int numSurah) {
-    if (data['surah_number'] == widget.detailSurah!.number &&
-        data['ayat'] == numSurah) {
-      isLastRead = true;
-    } else {
-      isLastRead = false;
-    }
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final verses = widget.detailSurah == null
-        ? widget.juz!.verses
-        : widget.detailSurah!.verses;
-    final preBismillah = widget.detailSurah == null
-        ? null
-        : widget.detailSurah!.preBismillah.text!.arab;
     return BlocListener<LastReadBloc, LastReadState>(
       listener: (context, state) {
         if (state is LastReadHasSuccess) {
@@ -58,7 +49,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
           preBismillah == null
               ? const SizedBox()
               : Text(
-                  preBismillah,
+                  preBismillah ?? '',
                   textAlign: TextAlign.end,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -66,36 +57,37 @@ class _ListOfAyatState extends State<ListOfAyat> {
                     fontSize: 30,
                   ),
                 ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              final ayat = verses[index];
-              return Container(
-                margin: const EdgeInsets.only(top: 20),
+          Wrap(
+            children: List.generate(
+              verses.length,
+              (index) => Container(
+                padding: const EdgeInsets.only(top: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     BlocBuilder<LastReadBloc, LastReadState>(
                       builder: (context, state) {
                         if (state is LastReadHasData) {
-                          widget.detailSurah == null
-                              ? () {}
-                              : checkLastRead(
-                                  state.result, ayat.number!.inSurah!);
+                          if (widget.detailSurah != null) {
+                            checkLastRead(
+                                state.result, verses[index].number!.inSurah!);
+                          }
                         }
 
                         return ListTile(
-                          tileColor: isLastRead
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          tileColor: isLastRead ?? false
                               ? Theme.of(context).colorScheme.primary
                               : Theme.of(context).colorScheme.onPrimary,
                           leading: Text(
-                            arabicNumber.convert(ayat.number!.inSurah),
+                            arabicNumber.convert(verses[index].number!.inSurah),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: "Uthmanic",
                               fontSize: 30,
-                              color: isLastRead
+                              color: isLastRead ?? false
                                   ? Theme.of(context).colorScheme.onPrimary
                                   : Theme.of(context).colorScheme.surface,
                             ),
@@ -118,7 +110,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
                                   },
                                   icon: Icon(
                                     Icons.menu_book_outlined,
-                                    color: isLastRead
+                                    color: isLastRead ?? false
                                         ? Theme.of(context)
                                             .colorScheme
                                             .onPrimary
@@ -131,7 +123,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
                           trailing: widget.detailSurah == null
                               ? null
                               : PopupMenuButton(
-                                  color: isLastRead
+                                  color: isLastRead ?? false
                                       ? Theme.of(context).colorScheme.onPrimary
                                       : Theme.of(context).colorScheme.surface,
                                   itemBuilder: (context) {
@@ -164,7 +156,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      ayat.text!.arab!,
+                      verses[index].text!.arab!,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 30,
@@ -174,7 +166,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      '"${ayat.text!.transliteration!.en}"',
+                      '"${verses[index].text!.transliteration!.en}"',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -184,7 +176,7 @@ class _ListOfAyatState extends State<ListOfAyat> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      '"${ayat.translation!.id}"',
+                      '"${verses[index].translation!.id}"',
                       style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -194,12 +186,20 @@ class _ListOfAyatState extends State<ListOfAyat> {
                     const SizedBox(height: 10),
                   ],
                 ),
-              );
-            },
-            itemCount: verses.length,
+              ),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  void checkLastRead(Map<String, dynamic> data, int numSurah) {
+    if (data['surah_number'] == widget.detailSurah!.number &&
+        data['ayat'] == numSurah) {
+      isLastRead = true;
+    } else {
+      isLastRead = false;
+    }
   }
 }

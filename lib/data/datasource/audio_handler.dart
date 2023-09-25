@@ -23,7 +23,6 @@ class MyAudioHandler extends BaseAudioHandler {
     _notifyAudioHandlerAboutPlaybackEvents();
     _listenForDurationChanges();
     _listenPlayBackStateChanges();
-    _listenForCurrentSongIndexChanges();
     _listenForSequenceStateChanges();
   }
 
@@ -92,15 +91,6 @@ class MyAudioHandler extends BaseAudioHandler {
       newQueue[index] = newMediaItem;
       queue.add(newQueue);
       mediaItem.add(newMediaItem);
-    });
-  }
-
-  void _listenForCurrentSongIndexChanges() {
-    _player.currentIndexStream.listen((index) {
-      final playlist = queue.value;
-      if (index == null || playlist.isEmpty) return;
-
-      mediaItem.add(playlist[index]);
     });
   }
 

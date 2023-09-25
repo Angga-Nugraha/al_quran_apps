@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of 'components_helpers.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

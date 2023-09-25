@@ -1,14 +1,14 @@
-import 'package:al_quran_apps/common/styles.dart';
-import 'package:al_quran_apps/common/routes.dart';
 import 'package:al_quran_apps/data/helpers/notification_helper.dart';
 import 'package:al_quran_apps/injection.dart';
-import 'package:al_quran_apps/presentation/bloc/theme_bloc/theme_bloc.dart';
-import 'package:al_quran_apps/presentation/pages/home_page.dart';
-import 'package:al_quran_apps/presentation/pages/settings_page.dart';
-import 'package:al_quran_apps/presentation/pages/third_page.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../data/common/styles.dart';
+import '../bloc/theme_bloc/theme_bloc.dart';
+import 'home_page/home_page.dart';
+import 'setting_page/settings_page.dart';
+import 'profile_page/profile_page.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -24,7 +24,7 @@ class _RootScreenState extends State<RootScreen> {
   List<Widget> _listWidget() => [
         SecondPage(),
         const HomePage(),
-        const ThirdPage(),
+        const ProfilePage(),
       ];
 
   final List<TabItem> _tabData = [
@@ -44,7 +44,7 @@ class _RootScreenState extends State<RootScreen> {
     super.initState();
     notificationHelper = locator<NotificationHelper>();
 
-    notificationHelper.configureSelectNotificationSubject(detailPageRoutes);
+    notificationHelper.configureSelectNotificationSubject();
   }
 
   @override
@@ -75,6 +75,7 @@ class _RootScreenState extends State<RootScreen> {
                 : primaryColor,
             activeColor: onPrimary,
             style: TabStyle.reactCircle,
+            curve: Curves.elasticIn,
             items: _tabData,
             initialActiveIndex: _bottomNavIndex,
             onTap: _onBottomNavTapped,

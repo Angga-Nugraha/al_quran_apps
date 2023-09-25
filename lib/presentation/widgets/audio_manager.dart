@@ -1,8 +1,4 @@
-import 'package:al_quran_apps/presentation/bloc/play_audio/play_audio_bloc.dart';
-import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:al_quran_apps/injection.dart' as di;
+part of 'components_helpers.dart';
 
 class AudioManager extends StatefulWidget {
   final String title;
@@ -24,7 +20,7 @@ class _AudioManagerState extends State<AudioManager> {
   @override
   void initState() {
     Future.microtask(() => [
-          di.locator<AudioHandler>(),
+          locator<AudioHandler>(),
           BlocProvider.of<PlayAudioBloc>(context, listen: false).add(
               FetchPlaylist(
                   title: widget.title,

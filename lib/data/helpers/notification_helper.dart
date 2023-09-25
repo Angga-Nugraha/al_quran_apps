@@ -1,10 +1,10 @@
 import 'dart:convert';
-
-import 'package:al_quran_apps/common/utils.dart';
-import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../common/routes.dart';
+import '../models/database_model/last_read_table.dart';
 
 final selectNotificationSubject = BehaviorSubject<String>();
 
@@ -20,7 +20,7 @@ class NotificationHelper {
   Future<void> initNotification(
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     var initializationSettingsAndroid =
-        const AndroidInitializationSettings('app_icon');
+        const AndroidInitializationSettings('ic_launcher');
 
     var initializationSettingsIOS = const DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -34,16 +34,17 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: (details) async {
       final payload = details.payload;
+
       if (payload != null) {
         debugPrint('notification payload : $payload');
       }
-      selectNotificationSubject.add(payload ?? 'empty payload');
+      selectNotificationSubject.add(payload ?? '');
     });
   }
 
   Future<void> showNotification(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-      LastReadTable lastReadTable) async {
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin, int id,
+      {LastReadTable? lastReadTable}) async {
     var channelId = '01';
     var channelName = 'channel_01';
     var channelDescription = 'al-qur\'an news channel';
@@ -62,22 +63,31 @@ class NotificationHelper {
     var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
-    final payload = lastReadTable.toJson();
     var titleNotification = '<b>Al-Qur\'an evo<b>';
-    var titleNews =
-        "Reminder untuk bacaan terakhir anda, Surat ${payload['surah_name']} ayat : ${payload['ayat']}, ayo lanjutkan bacaan Al-Qur'an mu";
+    var payload = {};
+    var titleNews = "Ayo mulai mengaji bersama kami \u{1F496}";
+    if (lastReadTable != null) {
+      payload = lastReadTable.toJson();
+      titleNews =
+          "Reminder untuk bacaan terakhir anda, Surat ${payload['surah_name']} ayat : ${payload['ayat']}\nAyo lanjutkan \u{1F496}";
+    }
 
     await flutterLocalNotificationsPlugin.show(
-        0, titleNotification, titleNews, platformChannelSpecifics,
-        payload: jsonEncode(payload));
+      id,
+      titleNotification,
+      titleNews,
+      platformChannelSpecifics,
+      payload: lastReadTable == null ? null : jsonEncode(payload),
+    );
   }
 
-  void configureSelectNotificationSubject(String route) {
+  void configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((payload) async {
-      var data = LastReadTable.fromMap(json.decode(payload));
-      var suratNumber = data.number;
-
-      Navigation.intentWithData(route, suratNumber);
+      if (payload != '') {
+        var data = LastReadTable.fromMap(json.decode(payload));
+        var suratNumber = data.number;
+        Navigation.intentWithData(detailPageRoutes, arguments: suratNumber);
+      }
     });
   }
 }

@@ -7,20 +7,18 @@ abstract class ShowTranslateState extends Equatable {
   List<Object> get props => [];
 }
 
-class ShowTanslateInitial extends ShowTranslateState {}
+class ShowTranslateInitial extends ShowTranslateState {
+  final bool result;
+
+  const ShowTranslateInitial({this.result = true});
+  @override
+  List<Object> get props => [result];
+}
 
 class ShowingState extends ShowTranslateState {
   final bool result;
 
   const ShowingState(this.result);
-  @override
-  List<Object> get props => [result];
-}
-
-class HiddenState extends ShowTranslateState {
-  final bool result;
-
-  const HiddenState(this.result);
   @override
   List<Object> get props => [result];
 }

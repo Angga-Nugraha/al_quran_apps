@@ -1,16 +1,17 @@
-import 'package:al_quran_apps/data/helpers/notification_helper.dart';
-import 'package:al_quran_apps/presentation/bloc/reminder_bloc/reminder_bloc.dart';
-import 'package:al_quran_apps/presentation/bloc/theme_bloc/theme_bloc.dart';
-import 'package:al_quran_apps/presentation/components/components_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../data/helpers/notification_helper.dart';
+import '../../bloc/reminder_bloc/reminder_bloc.dart';
+import '../../bloc/theme_bloc/theme_bloc.dart';
+import '../../widgets/components_helpers.dart';
 
 class SecondPage extends StatelessWidget {
   SecondPage({super.key});
 
   final NotificationHelper notificationHelper = NotificationHelper();
-  static bool isScheduling = false;
-  static bool isDarkTheme = false;
+  static bool? isScheduling;
+  static bool? isDarkTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -55,17 +56,13 @@ class SecondPage extends StatelessWidget {
                       title: const Text(
                         "Ingatkan Terakhir Baca",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                         ),
                       ),
                       trailing: Switch.adaptive(
-                        value: isScheduling,
+                        value: isScheduling ?? false,
                         onChanged: (value) {
-                          if (!value) {
-                            context.read<ReminderBloc>().add(Remindered(value));
-                          } else {
-                            context.read<ReminderBloc>().add(Remindered(value));
-                          }
+                          context.read<ReminderBloc>().add(Remindered(value));
                         },
                       ),
                     );
@@ -83,23 +80,17 @@ class SecondPage extends StatelessWidget {
                     return ListTile(
                       leading: const Icon(Icons.dark_mode),
                       title: const Text(
-                        "Dark Theme",
+                        "Mode Gelap",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                         ),
                       ),
                       trailing: Switch.adaptive(
-                        value: isDarkTheme,
+                        value: isDarkTheme ?? false,
                         onChanged: (value) {
-                          if (!value) {
-                            context
-                                .read<ThemeBloc>()
-                                .add(SetDarkEvent(value: value));
-                          } else {
-                            context
-                                .read<ThemeBloc>()
-                                .add(SetDarkEvent(value: value));
-                          }
+                          context
+                              .read<ThemeBloc>()
+                              .add(SetDarkEvent(value: value));
                         },
                       ),
                     );
@@ -111,7 +102,7 @@ class SecondPage extends StatelessWidget {
         ),
         const Text(
           '2023 \u00a9 Angga Nugraha \u{1f60e}',
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 14),
         ),
       ],
     );

@@ -2,7 +2,7 @@ import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite_sqlcipher/sqflite.dart';
 
-import '../../common/encrypt.dart';
+import '../common/encrypt.dart';
 import '../models/database_model/surah_tabel.dart';
 
 class DatabaseHelper {

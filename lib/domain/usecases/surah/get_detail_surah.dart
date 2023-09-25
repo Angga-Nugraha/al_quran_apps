@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../common/failure.dart';
+import '../../../data/common/failure.dart';
 import '../../entities/detail_surah/detail_surah.dart';
 import '../../repositories/surah_repositories.dart';
 

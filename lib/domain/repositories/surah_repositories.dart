@@ -1,7 +1,7 @@
 import 'package:al_quran_apps/domain/entities/juz.dart';
 import 'package:dartz/dartz.dart';
 
-import '../../common/failure.dart';
+import '../../data/common/failure.dart';
 import '../entities/detail_surah/detail_surah.dart';
 import '../entities/surah/surah.dart';
 

@@ -1,5 +1,5 @@
 import 'package:al_quran_apps/data/datasource/audio_handler.dart';
-import 'package:al_quran_apps/common/network_info.dart';
+import 'package:al_quran_apps/data/common/network_info.dart';
 import 'package:al_quran_apps/data/datasource/local_data_source.dart';
 import 'package:al_quran_apps/data/helpers/background_service.dart';
 import 'package:al_quran_apps/data/helpers/database_helper.dart';
@@ -131,8 +131,8 @@ Future<void> init() async {
   locator.registerLazySingleton(() => DataConnectionChecker());
   locator.registerLazySingleton(() => DatabaseHelper());
   locator.registerLazySingleton(() => NotificationHelper());
+  locator.registerLazySingleton(() => BackgroundService()..initializeIsolate());
   locator.registerLazySingleton(
     () => PreferencesHelper(sharedPreferences: SharedPreferences.getInstance()),
   );
-  locator.registerLazySingleton(() => BackgroundService()..initializeIsolate());
 }

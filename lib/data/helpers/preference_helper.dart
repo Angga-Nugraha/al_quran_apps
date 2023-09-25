@@ -7,6 +7,7 @@ class PreferencesHelper {
 
   static const _reminderMe = 'REMINDER_ME';
   static const _isDarkTheme = 'DARK_THEME';
+  static const _isFirstTime = 'FIRS_TIME';
 
   Future<bool> get isReminder async {
     final prefs = await sharedPreferences;
@@ -26,5 +27,16 @@ class PreferencesHelper {
   void setDarkTheme(bool value) async {
     final prefs = await sharedPreferences;
     prefs.setBool(_isDarkTheme, value);
+  }
+
+  Future<bool> get isFirstTime async {
+    final prefs = await sharedPreferences;
+    var value = prefs.getBool(_isFirstTime) ?? true;
+    return value;
+  }
+
+  void setFirstTime(bool value) async {
+    final prefs = await sharedPreferences;
+    prefs.setBool(_isFirstTime, value);
   }
 }

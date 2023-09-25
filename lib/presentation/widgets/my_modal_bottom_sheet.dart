@@ -5,19 +5,19 @@ Future<dynamic> myModalBottomSheet(
   return showModalBottomSheet(
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     isScrollControlled: true,
+    enableDrag: true,
     useSafeArea: true,
+    showDragHandle: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)),
+    ),
     context: context,
     builder: (context) {
       return Container(
         padding: const EdgeInsets.all(10),
+        height: MediaQuery.of(context).size.height * 0.75,
         child: Column(
           children: [
-            Container(
-              color: Theme.of(context).colorScheme.onPrimary,
-              height: 4,
-              width: 48,
-              margin: const EdgeInsets.all(10),
-            ),
             const Text(
               'Tasir',
               style: TextStyle(

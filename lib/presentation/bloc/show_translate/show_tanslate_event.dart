@@ -7,6 +7,10 @@ abstract class ShowTranslateEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ShowingEvent extends ShowTranslateEvent {}
+class ShowingEvent extends ShowTranslateEvent {
+  final bool value;
 
-class HiddenEvent extends ShowTranslateEvent {}
+  const ShowingEvent(this.value);
+  @override
+  List<Object> get props => [value];
+}

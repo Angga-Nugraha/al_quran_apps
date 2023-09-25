@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateTimeHelper {
@@ -5,7 +6,7 @@ class DateTimeHelper {
     //DATE AND TIME FORMAT
     final now = DateTime.now();
     final dateFormat = DateFormat('y/M/d');
-    const timeSpecifics = '18:30:00';
+    const timeSpecifics = '18:00:00';
     final completeFormat = DateFormat('y/M/d H:m:s');
 
     //TODAY FORMAT
@@ -18,6 +19,10 @@ class DateTimeHelper {
     final tomorrowDate = dateFormat.format(formated);
     final tomorrowDateAndTime = '$tomorrowDate $timeSpecifics';
     var resultTomorrow = completeFormat.parseStrict(tomorrowDateAndTime);
-    return now.isAfter(resultToday) ? resultTomorrow : resultToday;
+
+    var result = now.isAfter(resultToday) ? resultTomorrow : resultToday;
+    debugPrint(result.toString());
+
+    return result;
   }
 }

@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:al_quran_apps/common/network_info.dart';
+import 'package:al_quran_apps/data/common/network_info.dart';
 import 'package:al_quran_apps/data/datasource/local_data_source.dart';
 import 'package:al_quran_apps/data/helpers/background_service.dart';
-import 'package:al_quran_apps/data/helpers/date_time_helper.dart';
 import 'package:al_quran_apps/data/helpers/preference_helper.dart';
 import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:al_quran_apps/data/models/database_model/surah_tabel.dart';
@@ -11,13 +10,15 @@ import 'package:al_quran_apps/domain/entities/juz.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-import '../../common/exception.dart';
-import '../../common/failure.dart';
+import '../common/exception.dart';
+import '../common/failure.dart';
 import '../../domain/entities/detail_surah/detail_surah.dart';
 import '../../domain/entities/surah/surah.dart';
 import '../../domain/repositories/surah_repositories.dart';
 import '../datasource/surah_data_source.dart';
+import '../helpers/date_time_helper.dart';
 
 class SurahRepositoryImpl implements SurahRepository {
   final SurahDataSource surahRemoteDataSource;
@@ -119,21 +120,29 @@ class SurahRepositoryImpl implements SurahRepository {
   Future<Either<Failure, bool>> setReminderAlarm(bool value) async {
     try {
       if (value) {
+        await Permission.notification.isDenied.then(
+          (value) {
+            if (value) {
+              Permission.notification.request();
+            }
+          },
+        );
         debugPrint('Reminder active');
         preferencesHelper.setDailyReminder(value);
-        return await AndroidAlarmManager.periodic(
-          const Duration(hours: 12),
+        await AndroidAlarmManager.periodic(
+          const Duration(days: 1),
           1,
           BackgroundService.callback,
           startAt: DateTimeHelper.format(),
           exact: true,
           wakeup: true,
-        ).then((value) => const Right(true));
+        );
+        return Right(value);
       } else {
         debugPrint('Reminder Canceled');
-        preferencesHelper.setDailyReminder(false);
-        return await AndroidAlarmManager.cancel(1)
-            .then((value) => const Right(false));
+        preferencesHelper.setDailyReminder(value);
+        await AndroidAlarmManager.cancel(1);
+        return Right(value);
       }
     } catch (e) {
       return Left(CacheFailure(e.toString()));

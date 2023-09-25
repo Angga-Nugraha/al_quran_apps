@@ -1,4 +1,4 @@
-import 'package:al_quran_apps/common/exception.dart';
+import 'package:al_quran_apps/data/common/exception.dart';
 import 'package:al_quran_apps/data/helpers/database_helper.dart';
 import 'package:al_quran_apps/data/models/database_model/last_read_table.dart';
 import 'package:al_quran_apps/data/models/database_model/surah_tabel.dart';

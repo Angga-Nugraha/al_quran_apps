@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:al_quran_apps/common/exception.dart';
+import 'package:al_quran_apps/data/common/exception.dart';
 import 'package:al_quran_apps/data/models/detail_surah_model/detail_surah_model.dart';
 import 'package:al_quran_apps/data/models/juz_model.dart';
 import 'package:al_quran_apps/data/models/surah_model/surah_model.dart';

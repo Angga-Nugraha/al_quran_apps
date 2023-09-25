@@ -1,12 +1,4 @@
-import 'package:al_quran_apps/domain/entities/detail_surah/detail_surah.dart';
-import 'package:al_quran_apps/domain/entities/detail_surah/verses.dart';
-import 'package:al_quran_apps/domain/entities/juz.dart';
-import 'package:al_quran_apps/presentation/bloc/last_read/last_read_bloc.dart';
-import 'package:al_quran_apps/presentation/components/components_helpers.dart';
-import 'package:arabic_numbers/arabic_numbers.dart';
-import 'package:context_menus/context_menus.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+part of 'components_helpers.dart';
 
 class CardOfAyat extends StatefulWidget {
   final DetailSurah? detailSurah;
@@ -20,13 +12,74 @@ class CardOfAyat extends StatefulWidget {
 
 class _CardOfAyatState extends State<CardOfAyat> {
   final arabicNumber = ArabicNumbers();
-  static bool isLastRead = false;
+  bool? isLastRead;
+  List<Verses> verses = [];
+  String? preBismillah;
 
   @override
   void initState() {
     super.initState();
+    verses = widget.detailSurah == null
+        ? widget.juz!.verses
+        : widget.detailSurah!.verses;
+    preBismillah = widget.detailSurah == null
+        ? null
+        : widget.detailSurah!.preBismillah.text!.arab;
+
     Future.microtask(() => BlocProvider.of<LastReadBloc>(context, listen: false)
         .add(GetLastReadEvent()));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<LastReadBloc, LastReadState>(
+      listener: (context, state) {
+        if (state is LastReadHasSuccess) {
+          mySnackbar(context: context, message: "Add to Last read");
+        }
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/border.png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  preBismillah == null
+                      ? const SizedBox()
+                      : Text(
+                          preBismillah ?? '',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Uthmanic",
+                            fontSize: 30,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                  result(verses),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void checkLastRead(Map<String, dynamic> data, int numSurah) {
@@ -55,6 +108,9 @@ class _CardOfAyatState extends State<CardOfAyat> {
                 ? _buildAyah(verses, index)
                 : ContextMenuRegion(
                     contextMenu: GenericContextMenu(
+                      buttonStyle: ContextMenuButtonStyle(
+                          padding: EdgeInsets.zero,
+                          bgColor: Theme.of(context).colorScheme.primary),
                       buttonConfigs: [
                         ContextMenuButtonConfig(
                           "Tandai terakhir dibaca",
@@ -71,6 +127,12 @@ class _CardOfAyatState extends State<CardOfAyat> {
                                 .add(InsertLastReadEvent(surah: values));
                           },
                         ),
+                        ContextMenuButtonConfig("Tafsir", onPressed: () {
+                          myModalBottomSheet(
+                            context: context,
+                            content: verses[index].tafsir!.id.long,
+                          );
+                        })
                       ],
                     ),
                     child: _buildAyah(verses, index),
@@ -81,7 +143,7 @@ class _CardOfAyatState extends State<CardOfAyat> {
     );
   }
 
-  Text _buildAyah(List<Verses> verses, int index) {
+  Widget _buildAyah(List<Verses> verses, int index) {
     return Text.rich(
       TextSpan(
         children: <InlineSpan>[
@@ -98,63 +160,9 @@ class _CardOfAyatState extends State<CardOfAyat> {
         fontWeight: FontWeight.bold,
         fontFamily: "Uthmanic",
         fontSize: 30,
-        color: isLastRead ? Theme.of(context).colorScheme.error : null,
+        color: isLastRead == true ? Colors.redAccent : null,
       ),
       textAlign: TextAlign.center,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final verses = widget.detailSurah == null
-        ? widget.juz!.verses
-        : widget.detailSurah!.verses;
-    final preBismillah = widget.detailSurah == null
-        ? null
-        : widget.detailSurah!.preBismillah.text!.arab;
-
-    return BlocListener<LastReadBloc, LastReadState>(
-      listener: (context, state) {
-        if (state is LastReadHasSuccess) {
-          mySnackbar(context: context, message: "Add to Last read");
-        }
-      },
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/border.png'),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Center(
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  preBismillah == null
-                      ? const SizedBox()
-                      : Text(
-                          preBismillah,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Uthmanic",
-                            fontSize: 30,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                  result(verses),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

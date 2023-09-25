@@ -5,13 +5,12 @@ Menggunakan salah satu API terbaik menurut saya dari [Gading Nasution](https://g
 jika anda ingin mencoba/menggunakan aplikasi ini anda bisa melakukan Clone Repository ini, atau anda bisa mengunduhnya pada [LINK](https://drive.google.com/file/d/1nWHPI2yq-w6ceEIv1PDvC8doI0_atQDG/view?usp=sharing)berikut.
 
 ## Screenshot tampilan aplikasi
-
-![Screenshot_1695649582](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/745a0d67-7d9e-4bf4-a25a-ed2a4c0efd09|width=10)
-![Screenshot_1695649623](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/c87ad3fe-1937-45c9-a8d6-89b54286ea3e|width=100px)
-![Screenshot_1695649617](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/864ce2b7-70d2-4fc3-a924-242ace96ac97|width=100px)
-![Screenshot_1695649638](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/bca1e4ce-47d6-431c-8a0b-48ea8d50e6af|width=100px)
-![Screenshot_1695649647](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/ee7f42de-0406-487d-b302-8b48b4e0da37|width=100px)
-![Screenshot_1695649712](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/f3423c7e-8274-4956-8b62-eab82850de91|width=100px)
-![Screenshot_1695649662](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/7c21856f-2dd2-4608-ac77-18316a16b6dc|width=100px)
-![Screenshot_1695649685](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/8ad50c82-1a90-4214-b2b7-559adb9c934c|width=100px)
-![Screenshot_1695649692](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/55e7ec81-d655-4526-bd4e-75a6b85d955a|width=100px)
+![Screenshot_1695649582](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/d0053c22-8300-4b6e-af9a-7d50ad20f40f)
+![Screenshot_1695649623](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/f7ca5ec0-0a70-4ba4-bb0a-2426bd2ea625)
+![Screenshot_1695649638](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/8d85c6b5-6e52-466a-b6d6-fccf1f357cdf)
+![Screenshot_1695649617](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/1013459c-f9d3-4d28-b682-0f1455e437d9)
+![Screenshot_1695649712](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/5ff6276d-3b7d-43b7-99f9-b4afc692d7d5)
+![Screenshot_1695649647](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/b84e7a06-d959-4542-9c9b-70f77fcba293)
+![Screenshot_1695649662](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/f3cdf7c1-50c4-4041-9fda-487ece2de3dc)
+![Screenshot_1695649685](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/5b22edac-59c8-4bbc-9433-461cf2dd230d)
+![Screenshot_1695649692](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/9c364243-109f-44ba-9306-ec80d29fe9c2)

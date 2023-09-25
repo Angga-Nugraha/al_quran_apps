@@ -6,7 +6,7 @@ jika anda ingin mencoba/menggunakan aplikasi ini anda bisa melakukan Clone Repos
 
 ## Screenshot tampilan aplikasi
 
-![Screenshot_1695649582|100](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/745a0d67-7d9e-4bf4-a25a-ed2a4c0efd09)
+![Screenshot_1695649582](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/745a0d67-7d9e-4bf4-a25a-ed2a4c0efd09|width=10)
 ![Screenshot_1695649623](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/c87ad3fe-1937-45c9-a8d6-89b54286ea3e|width=100px)
 ![Screenshot_1695649617](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/864ce2b7-70d2-4fc3-a924-242ace96ac97|width=100px)
 ![Screenshot_1695649638](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/bca1e4ce-47d6-431c-8a0b-48ea8d50e6af|width=100px)

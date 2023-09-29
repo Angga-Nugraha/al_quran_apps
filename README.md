@@ -2,7 +2,7 @@
 Aplikasi al-qur'an sederhana yang dapat kita gunakan dalam keseharian, aplikasi ini dilengkapi dengan feature tema gelap dan terang, reminder untuk riwayat terakhir baca melalui notifikasi, di sertai dengan Audio dari ayat-ayat alqur'an.
 Menggunakan salah satu API terbaik menurut saya dari [Gading Nasution](https://github.com/gadingnst/quran-api).
 
-jika anda ingin mencoba/menggunakan aplikasi ini anda bisa melakukan Clone Repository ini, atau anda bisa mengunduhnya pada [LINK](https://drive.google.com/file/d/1nWHPI2yq-w6ceEIv1PDvC8doI0_atQDG/view?usp=sharing)berikut.
+jika anda ingin mencoba/menggunakan aplikasi ini anda bisa melakukan Clone Repository ini, atau anda bisa mengunduhnya pada [LINK](https://drive.google.com/file/d/1ctffRXPOKxmzEsXFtHy2YTeGW6Pa2dgf/view?usp=sharing)berikut.
 
 ## Screenshot tampilan aplikasi
 ![Screenshot_1695649582](https://github.com/Angga-Nugraha/al_quran_apps/assets/76716099/d0053c22-8300-4b6e-af9a-7d50ad20f40f)
